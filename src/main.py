@@ -6,9 +6,9 @@ from generated.SQLLexer import SQLLexer
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python main.py <file.sql>")
+        print("Usage: python src.main <file.sql>")
         return
-
+    
     input_stream = FileStream(sys.argv[1], encoding='utf-8')
 
     lexer = SQLLexer(input_stream)

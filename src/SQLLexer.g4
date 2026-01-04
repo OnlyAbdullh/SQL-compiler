@@ -4,7 +4,6 @@ options {
 }
 
 tokens {
-      
 	IDENTIFIER,
 	STRING
 }
@@ -267,14 +266,14 @@ fragment BITFrag: [01];
 
 MONEY_LITERAL: [$\u00A2\u00A3\u00A4\u00A5] NUMBER_LITERAL;
 
-HEX_LITERAL: ('0' 'X' ( NEW_LINE_STRING | HEX_REP)+) {
+HEX_LITERAL: ('0' 'X' (( NEW_LINE_STRING | HEX_REP)+ |)) {
 raw = self.text
 # Remove \r and \n that come after backslash
 raw = raw.replace("\\\r\n", "")
 raw = raw.replace("\\\n", "")
 raw = raw.replace("\\\r", "")
 if raw[-1] in ['x', 'X']:
-		raw.append('0')
+      raw+="0"
 self.text = raw
       };
 
@@ -297,7 +296,7 @@ STRING_LITERAL:
         self.text = raw
       };
 
-UNICODE_STRING_LITERAL: ('N' STRING_LITERAL){
+UNICODE_STRING_LITERAL: ('N' STRING_LITERAL) {
         raw = self.text
         # Remove the N , first and last quote
         raw = raw[2:-1]
