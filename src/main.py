@@ -93,8 +93,9 @@ def main():
     tree = parser.tsql_file()
     # print(tree.toStringTree(recog=parser))
     # Visualize
-    visualize_parse_tree(parser, tree, save_path='output.png')
+
     print(to_string_tree(tree, lexer.symbolicNames))
+    visualize_parse_tree(parser, tree, title="T-SQL Parse Tree")
     
 
 
