@@ -8,12 +8,12 @@ import BasicParser;
 delete_statement
     : DELETE top_clause? FROM? delete_target output_clause? delete_from_extension? delete_where_clause? SEMI?
     ;
-  
+
 delete_target
     : table_source ;
 
 delete_from_extension
-    : FROM  table_source (join_clause)*
+    : FROM  table_source
     ;
   
 delete_where_clause
@@ -22,10 +22,19 @@ delete_where_clause
     ;
 
 output_clause
-    : OUTPUT output_item (COMMA output_item)*
+    : OUTPUT output_item (COMMA output_item)* output_into_clause?
+    ;
+
+output_into_clause
+    : INTO table_variable
     ;
 
 output_item
     : DELETED DOT STAR
     | DELETED DOT IDENTIFIER
+    | full_column_name
+    ;
+
+table_variable
+    : USER_VARIABLE
     ;

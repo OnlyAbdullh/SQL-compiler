@@ -24,8 +24,6 @@ table_source_item
     : full_table_name as_alias?
     ;
 
-
-
 as_alias: AS? IDENTIFIER;
 
 full_table_name: IDENTIFIER (DOT IDENTIFIER)*;
