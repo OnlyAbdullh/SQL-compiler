@@ -26,7 +26,7 @@
         {
             "label": "Generate ANTLR Python Files",
             "type": "shell",
-            "command": "antlr",
+            "command": "antlr4",
             "args": [
                 "-Dlanguage=Python3",
                 "-o",
