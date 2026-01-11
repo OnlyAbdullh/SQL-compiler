@@ -5,22 +5,19 @@ options {
 
 import BasicParser;
 update_statement :
-UPDATE table_source SET assignment (COMMA assignment)* from_update_clause where_clause? SEMI? ;
+UPDATE full_table_name SET assignment_list FROM? table_source where_clause? SEMI? ;
+
+assignment_list: assignment (COMMA assignment)*;
 
 assignment :
 	target EQ source ;
 
 target
-    : column
-    | as_alias DOT column
+    : full_column_name
     | USER_VARIABLE
     ;
 source
-    : expression
-    | as_alias DOT column
+    : expression | DEFAULT
     ;
-
-from_update_clause:
-	FROM table_source (as_alias)? (JOIN table_source (as_alias)? ON search_condition)*;
 
 

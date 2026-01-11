@@ -5,6 +5,7 @@ options {
 }
 
 import BasicParser;
+import SelectParser;
 
 search_condition: or_expression;
 
@@ -18,8 +19,8 @@ predicate_expression:
 	| predicate;
 
 predicate
-    : add_sub_expression (OPERATOR add_sub_expression)*
-    | full_column_name BETWEEN add_sub_expression AND add_sub_expression
+    : expression (OPERATOR expression)*
+    | full_column_name BETWEEN expression AND expression
     | full_column_name IS NULL
     | full_column_name IS NOT NULL
     | full_column_name IN LPAREN expression (COMMA expression)* RPAREN
@@ -36,5 +37,5 @@ mul_div_expression:
 primary_expression:
 	LPAREN expression RPAREN
 	| full_column_name
-	| LITERAL;
+	| LITERAL| NULL| USER_VARIABLE|select_statement;
 

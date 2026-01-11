@@ -31,7 +31,5 @@ full_table_name: IDENTIFIER (DOT IDENTIFIER)*;
 top_clause: TOP LPAREN add_sub_expression RPAREN PERCENT?;
 
 cursor_name: IDENTIFIER;
-column: IDENTIFIER;
-column_list: LPAREN column (COMMA column)* RPAREN;
-
 full_column_name: IDENTIFIER (DOT IDENTIFIER)*;
+column_list: LPAREN full_column_name (COMMA full_column_name)* RPAREN;
