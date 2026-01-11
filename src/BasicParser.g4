@@ -6,11 +6,25 @@ options {
 
 import ExpressionParser;
 
-table_source: IDENTIFIER;
+table_source
+    : object_name
+    ;
 
-column: IDENTIFIER;
+column
+    : object_name
+    ;
 
 where_clause: WHERE search_condition;
  
-object_name : IDENTIFIER (DOT IDENTIFIER)*; 
+object_name
+    : IDENTIFIER (DOT IDENTIFIER)*
+    ;
+ 
+ 
 
+
+
+
+
+
+ 
