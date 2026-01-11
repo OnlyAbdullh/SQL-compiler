@@ -21,7 +21,11 @@ join_type: INNER?
 
 table_source: table_source_item join_clause*;
 table_source_item
-    : full_table_name as_alias?
+    : (full_table_name  | derived_table) as_alias?
+    ;
+
+derived_table
+    : LPAREN select_statement RPAREN
     ;
 
 as_alias: AS? IDENTIFIER;
@@ -33,3 +37,4 @@ top_clause: TOP LPAREN add_sub_expression RPAREN PERCENT?;
 cursor_name: IDENTIFIER;
 full_column_name: IDENTIFIER (DOT IDENTIFIER)*;
 column_list: LPAREN full_column_name (COMMA full_column_name)* RPAREN;
+operators: EQ | NEQ | LTE | GTE | LT | GT;

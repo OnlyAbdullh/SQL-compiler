@@ -19,7 +19,7 @@ predicate_expression:
 	| predicate;
 
 predicate
-    : expression (OPERATOR expression)*
+    : expression (operators expression)*
     | full_column_name BETWEEN expression AND expression
     | full_column_name IS NULL
     | full_column_name IS NOT NULL
@@ -37,5 +37,5 @@ mul_div_expression:
 primary_expression:
 	LPAREN expression RPAREN
 	| full_column_name
-	| LITERAL| NULL| USER_VARIABLE|select_statement;
+	| LITERAL| NULL| USER_VARIABLE|derived_table;
 

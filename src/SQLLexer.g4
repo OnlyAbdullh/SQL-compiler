@@ -5,8 +5,7 @@ options {
 
 tokens {
 	IDENTIFIER,
-	LITERAL,
-	OPERATOR
+	LITERAL
 }
 
 //! ╔══════════════════════════════════╗
@@ -341,12 +340,12 @@ DOT: '.';
 LPAREN: '(';
 RPAREN: ')';
 
-EQ: '=' -> type(OPERATOR);
-NEQ: ('!=' | '<>') -> type(OPERATOR);
-LTE: '<=' -> type(OPERATOR);
-GTE: '>=' -> type(OPERATOR);
-LT: '<' -> type(OPERATOR);
-GT: '>' -> type(OPERATOR);
+EQ: '=' ;
+NEQ: ('!=' | '<>') ;
+LTE: '<=' ;
+GTE: '>=' ;
+LT: '<' ;
+GT: '>' ;
 
 MINUS: '-';
 STAR: '*';
