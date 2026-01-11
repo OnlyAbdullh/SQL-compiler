@@ -12,17 +12,15 @@ assignment :
 
 target
     : column
-    | table_alias DOT column
+    | as_alias DOT column
     | USER_VARIABLE
     ;
 source
     : expression
-    | table_alias DOT column
+    | as_alias DOT column
     ;
 
 from_update_clause:
-	FROM table_source (table_alias)? (JOIN table_source (table_alias)? ON search_condition)*;
+	FROM table_source (as_alias)? (JOIN table_source (as_alias)? ON search_condition)*;
 
-table_alias
-    : AS? IDENTIFIER
-    ;
+
