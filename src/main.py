@@ -4,6 +4,7 @@ from antlr4.error.DiagnosticErrorListener import DiagnosticErrorListener
 
 from generated.SQLLexer import SQLLexer
 from generated.SQLParser import SQLParser
+from visualizar import visualize_parse_tree
 
 
 
@@ -50,7 +51,7 @@ def _to_string_tree_traverse(tree, builder, symbolic_lexer_names, token_delimite
                 child_list_stack.append(children)
 
 
-DEFAULT_TEST_FILE = "tests/test.sql"
+DEFAULT_TEST_FILE = "tests/only_test.sql"
 
 def main():
     parser_cli = argparse.ArgumentParser(description="T-SQL Parser")
@@ -91,7 +92,10 @@ def main():
 
     tree = parser.tsql_file()
     # print(tree.toStringTree(recog=parser))
+    # Visualize
+    visualize_parse_tree(parser, tree, save_path='output.png')
     print(to_string_tree(tree, lexer.symbolicNames))
+    
 
 
 if __name__ == "__main__":
