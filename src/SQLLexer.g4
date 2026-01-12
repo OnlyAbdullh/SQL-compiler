@@ -268,6 +268,12 @@ DECIMAL    : 'DECIMAL';
 FLOAT :'FLOAT';
 NTEXT : 'NTEXT';
 DATETIMEOFFSET : 'DATETIMEOFFSET';
+PAD_INDEX  : 'PAD_INDEX';
+IGNORE_DUP_KEY : 'IGNORE_DUP_KEY';
+ALLOW_ROW_LOCKS : 'ALLOW_ROW_LOCKS';
+ALLOW_PAGE_LOCKS : 'ALLOW_PAGE_LOCKS';
+INSERTED:'INSERTED';
+INCLUDE:'INCLUDE';
 //! ╔══════════════════════════════════╗
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝

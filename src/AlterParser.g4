@@ -45,7 +45,6 @@ index_action
     | RENAME TO index_name
     ;
 
-index_name : IDENTIFIER;
 
 rebuild_options
     : WITH LPAREN rebuild_option (COMMA rebuild_option)* RPAREN ;

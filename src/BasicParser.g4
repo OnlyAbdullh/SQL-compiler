@@ -149,3 +149,4 @@ default_value
 return_data_type
     : column_type | TABLE;
 
+index_name : IDENTIFIER;
