@@ -73,3 +73,16 @@ SELECT OrderID, OrderDate, CustomerID
 FROM dbo.Orders
 WHERE OrderDate >= '2025-01-01'
 WITH CHECK OPTION;
+
+ALTER USER Mary5 WITH NAME = Mary51;
+
+ALTER USER Mary51 WITH DEFAULT_SCHEMA = Purchasing;
+
+ALTER USER Philip
+WITH NAME = Philipe,
+     DEFAULT_SCHEMA = Development,
+     PASSWORD = 'new' OLD_PASSWORD = 'old',
+     DEFAULT_LANGUAGE = French;
+
+ALTER USER Mai
+WITH LOGIN = Mai;

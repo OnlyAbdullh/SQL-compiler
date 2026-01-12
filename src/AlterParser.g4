@@ -7,6 +7,7 @@ alter_statement
     : alter_table
     | alter_index
     | alter_view
+    | alter_user
     ;
 
 alter_table
@@ -64,3 +65,14 @@ alter_view
     : ALTER VIEW full_table_name column_list? AS select_statement view_check_option? SEMI? ;
 view_check_option
     : WITH CHECK OPTION ;
+
+alter_user
+    : ALTER USER user_name WITH user_option (COMMA user_option)* SEMI?;
+
+user_option
+    : NAME EQ IDENTIFIER
+    | DEFAULT_SCHEMA EQ (IDENTIFIER | NULL)
+    | LOGIN EQ IDENTIFIER
+    | PASSWORD EQ LITERAL (OLD_PASSWORD EQ LITERAL)?
+    | DEFAULT_LANGUAGE EQ (NONE | LITERAL | IDENTIFIER)
+    | ALLOW_ENCRYPTED_VALUE_MODIFICATIONS EQ (ON | OFF);

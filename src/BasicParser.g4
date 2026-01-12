@@ -105,3 +105,4 @@ foreign_key_constraint
 
 check_constraint
     : CHECK LPAREN search_condition RPAREN ;
+user_name : IDENTIFIER  ;
