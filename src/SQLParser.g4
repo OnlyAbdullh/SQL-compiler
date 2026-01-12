@@ -4,7 +4,7 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser  ;
+import SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser, OutputParser ;
 
 tsql_file: statement* EOF;
 

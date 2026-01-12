@@ -35,7 +35,7 @@ join_type: INNER?
 
 table_source: table_source_item join_clause*;
 table_source_item
-    : (full_table_name  | derived_table) as_alias?
+    : (full_table_name  | derived_table | USER_VARIABLE) as_alias?
     ;
 
 derived_table
@@ -54,7 +54,7 @@ top_count
 select_top_clause: TOP top_count PERCENT?;
 
 cursor_name: IDENTIFIER;
-full_column_name: IDENTIFIER (DOT IDENTIFIER)*;
+full_column_name: (IDENTIFIER | DELETED | INSERTED) (DOT IDENTIFIER)*;
 column_list: LPAREN full_column_name (COMMA full_column_name)* RPAREN;
 operators: EQ | NEQ | LTE | GTE | LT | GT;
 
