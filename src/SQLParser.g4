@@ -4,11 +4,11 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser ,CreateParser ;
+import SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser,OutputParser ,CreateParser ;
 
 tsql_file: statement* EOF;
 
-statement: select_statement | insert_statement | delete_statement | update_statement| alter_statement | create_statement;
+statement: select_statement | insert_statement | delete_statement | update_statement| alter_statement| create_statement;
 
 //! ╔══════════════════════════════════════════╗
 //! ║━━━━━━━━━━━━<SELECT STATEMENT>━━━━━━━━━━━━║
