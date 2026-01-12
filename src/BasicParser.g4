@@ -34,6 +34,7 @@ join_type: INNER?
     ;
 
 table_source: table_source_item join_clause*;
+table_source_list: table_source (COMMA table_source)*;
 table_source_item
     : (full_table_name  | derived_table | USER_VARIABLE) as_alias?
     ;
@@ -47,6 +48,9 @@ as_alias: AS? IDENTIFIER;
 full_table_name: IDENTIFIER (DOT IDENTIFIER)*;
 
 top_clause: TOP LPAREN expression RPAREN PERCENT?;
+
+set_operators: (UNION ALL?) | EXCEPT | INTERSECT;
+
 top_count
     : expression
     | LPAREN expression RPAREN
