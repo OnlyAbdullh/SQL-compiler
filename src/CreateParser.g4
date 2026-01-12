@@ -7,6 +7,7 @@ import BasicParser;
 create_statement
     : create_table
     | create_index
+    | create_view
     ;
 
 create_table
@@ -61,3 +62,18 @@ index_option
     | ALLOW_ROW_LOCKS EQ (ON | OFF)
     | ALLOW_PAGE_LOCKS EQ (ON | OFF)
     ;
+
+
+create_view
+    : CREATE VIEW full_table_name view_column_list?
+      view_with_attributes?
+      AS select_statement view_check_option? SEMI?
+    ;
+
+view_column_list
+    : LPAREN IDENTIFIER (COMMA IDENTIFIER)* RPAREN;
+
+view_with_attributes
+    : WITH view_attribute (COMMA view_attribute)*;
+
+

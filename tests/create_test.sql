@@ -46,3 +46,19 @@ WITH (
     ALLOW_ROW_LOCKS = ON,
     ALLOW_PAGE_LOCKS = OFF
 );
+
+CREATE VIEW Sales.CustomerOrderSummary
+    (CustomerId, FullName, TotalOrders, TotalAmount)
+WITH ENCRYPTION, SCHEMABINDING, VIEW_METADATA
+AS
+SELECT
+    c.Id                           AS CustomerId,
+    c.FirstName + ' ' + c.LastName AS FullName,
+    COUNT(o.Id)                    AS TotalOrders,
+    SUM(o.TotalAmount)             AS TotalAmount
+FROM Sales.Customers AS c
+LEFT JOIN Sales.Orders AS o
+    ON o.CustomerId = c.Id
+WHERE c.IsActive = 1
+GROUP BY c.Id, c.FirstName, c.LastName
+WITH CHECK OPTION;

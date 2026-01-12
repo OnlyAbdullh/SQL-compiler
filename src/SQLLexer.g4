@@ -274,6 +274,9 @@ ALLOW_ROW_LOCKS : 'ALLOW_ROW_LOCKS';
 ALLOW_PAGE_LOCKS : 'ALLOW_PAGE_LOCKS';
 INSERTED:'INSERTED';
 INCLUDE:'INCLUDE';
+ENCRYPTION:'ENCRYPTION';
+SCHEMABINDING:'SCHEMABINDING';
+VIEW_METADATA:'VIEW_METADATA';
 //! ╔══════════════════════════════════╗
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝
