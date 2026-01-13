@@ -57,19 +57,12 @@ top_count
     ;
 select_top_clause: TOP top_count PERCENT?;
 
-cursor_name: IDENTIFIER;
 full_column_name: (IDENTIFIER | DELETED | INSERTED) (DOT IDENTIFIER)*;
 column_list: LPAREN full_column_name (COMMA full_column_name)* RPAREN;
-operators: EQ | NEQ | LTE | GTE | LT | GT;
 
-function_call
-    : IDENTIFIER LPAREN function_arguments? RPAREN
-    ;
+user_variable_list: USER_VARIABLE (COMMA USER_VARIABLE)*;
 
-function_arguments
-    : STAR
-    | expression (COMMA expression)*
-    ;
+operators: EQ | NEQ | LTE | GTE | LT | GT ;
 
 column_type
     : datatype type_length? nullability?;
@@ -80,25 +73,43 @@ datatype
     | BIGINT
     | SMALLINT
     | TINYINT
-    | DECIMAL
-    | NUMERIC
+    | decimal_data_type
+    | numeric_data_type
     | FLOAT
     | REAL
     | BIT
-    | CHAR
-    | NCHAR
-    | VARCHAR
-    | NVARCHAR
+    | char_data_type
+    | nchar_data_type
+    | varchar_data_type
+    | nvarchar_data_type
     | TEXT
     | NTEXT
     | DATE
     | DATETIME
-    | DATETIME2
-    | DATETIMEOFFSET
-    | TIME
-    | BINARY
-    | VARBINARY
+    | time_data_type
+    | binary_data_type
+    | varbinary_data_type
     ;
+
+decimal_data_type: DECIMAL (LPAREN LITERAL (COMMA LITERAL)? RPAREN)?;
+numeric_data_type: NUMERIC (LPAREN LITERAL (COMMA LITERAL)? RPAREN)? ;
+char_data_type:CHAR (LPAREN LITERAL RPAREN)?;
+nchar_data_type:NCHAR (LPAREN LITERAL RPAREN)?;
+binary_data_type:BINARY (LPAREN LITERAL RPAREN)?;
+varchar_data_type:NVARCHAR (LPAREN (LITERAL|MAX) RPAREN)?;
+nvarchar_data_type:VARCHAR (LPAREN (LITERAL|MAX) RPAREN)?;
+varbinary_data_type:VARBINARY (LPAREN (LITERAL|MAX) RPAREN)?;
+time_data_type:TIME|DATETIME2|DATETIMEOFFSET (LPAREN LITERAL RPAREN)?;
+
+function_call
+    : (IDENTIFIER|MAX) LPAREN function_arguments? RPAREN
+    ;
+
+function_arguments
+    : STAR
+    | expression (COMMA expression)*
+    ;
+
 
 type_length
     : LPAREN expression (COMMA expression)? RPAREN ;
@@ -153,3 +164,5 @@ default_value
 return_data_type
     : column_type | TABLE;
 
+
+table_type_definition:; //todo replace this with actual grammer
