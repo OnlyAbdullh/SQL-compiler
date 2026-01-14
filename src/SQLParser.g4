@@ -19,7 +19,7 @@ go_statement: ((USE IDENTIFIER )| GO) SEMI?;
 break_statement: BREAK SEMI?;
 continue_statement: CONTINUE SEMI?;
 
-statement: dml_statement | ddl_statement | variable_statement | cursor_statement | control_flow_statement | go_statement| print_clause;
+statement: dml_statement | ddl_statement | variable_statement | cursor_statement | control_flow_statement | go_statement| print_clause|function_call;
 
 statement_block: BEGIN SEMI? (statement)+ END SEMI?;
 
