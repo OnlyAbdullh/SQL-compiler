@@ -6,13 +6,15 @@ options {
 
 import BasicParser;
 import SelectParser;
+import OutputParser;
 
 insert_statement:
-	INSERT 
+	INSERT
 	top_clause?
 	INTO?
-	table_source 
+	(full_table_name | USER_VARIABLE)
 	column_list?
+	output_clause?
 	insert_source SEMI?;
 
 
@@ -22,4 +24,4 @@ default_values : DEFAULT VALUES;
 
 values_source: VALUES values_list (COMMA values_list)*;
 values_list :LPAREN value (COMMA value)* RPAREN ;
-value : LITERAL |IDENTIFIER | NULL;
+value : expression|DEFAULT;

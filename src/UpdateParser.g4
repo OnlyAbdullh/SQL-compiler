@@ -3,24 +3,26 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import BasicParser;
+import BasicParser, OutputParser, CursorParser;
+
 update_statement :
-UPDATE table_source SET assignment (COMMA assignment)* from_update_clause? where_clause? SEMI? ;
+UPDATE top_clause? (full_table_name| USER_VARIABLE) SET assignment_list output_clause? (FROM table_source_list)? update_where_clause? SEMI? ;
+
+assignment_list: assignment (COMMA assignment)*;
 
 assignment :
-	target OPERATOR source ;
+	target EQ source ;
 
 target
-    : column
-    | as_alias DOT column
+    : full_column_name
     | USER_VARIABLE
     ;
 source
-    : expression
-    | as_alias DOT column
+    : expression | DEFAULT
     ;
 
-from_update_clause:
-	FROM table_source (as_alias)? (JOIN table_source (as_alias)? ON search_condition)*;
+update_where_clause
+    : WHERE (search_condition | CURRENT OF cursor_name)
+    ;
 
 
