@@ -15,7 +15,9 @@ cursor_statement: declare_cursor | close_cursor | open_cursor | fetch_row | deal
 
 
 
-statement: dml_statement | ddl_statement | variable_statement | cursor_statement | control_flow_statement | go_statement| print_clause|function_call;
+statement: dml_statement | ddl_statement | variable_statement | cursor_statement | control_flow_statement | go_statement| print_clause|function_call|set_statement;
+set_statement
+    : SET IDENTITY_INSERT full_table_name (ON | OFF) SEMI? ;
 
 statement_block: BEGIN SEMI? (statement)+ END SEMI?;
 
@@ -27,6 +29,9 @@ if_clause: IF search_condition (statement)+ (ELSE (statement)+ )?;
 //! ╚══════════════════════════════════════════╝
 
 print_clause: PRINT (LITERAL|USER_VARIABLE) SEMI?;
+
+
+
 
 
 
