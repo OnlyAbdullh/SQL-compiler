@@ -4,9 +4,7 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import BasicParser;
-import SelectParser;
-import OutputParser;
+import BasicParser,SelectParser,OutputParser;
 
 insert_statement:
 	INSERT

@@ -4,8 +4,7 @@ options {
 }
 
 tokens {
-	IDENTIFIER,
-	LITERAL
+	IDENTIFIER
 }
 
 //! ╔══════════════════════════════════╗
@@ -227,7 +226,7 @@ DATE: 'DATE';
 DECIMAL_TYPE: 'DECIMAL_TYPE';
 FLOAT_TYPE: 'FLOAT_TYPE';
 INT_TYPE: 'INT_TYPE';
-//MONEY: 'MONEY';
+MONEY: 'MONEY';
 NCHAR: 'NCHAR';
 NUMERIC: 'NUMERIC';
 NVARCHAR: 'NVARCHAR';
@@ -308,20 +307,20 @@ OWNER:'OWNER';
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝
 NUMBER_LITERAL:
-	(DIGIT+ ( '.' DIGIT*)? | '.' DIGIT+) ('E' [+\-]? DIGIT+)? -> type(LITERAL);
+	(DIGIT+ ( '.' DIGIT*)? | '.' DIGIT+) ('E' [+\-]? DIGIT+)? ;
 
-TRUE: 'TRUE' -> type(LITERAL);
-FALSE: 'FALSE' -> type(LITERAL);
+TRUE: 'TRUE' ;
+FALSE: 'FALSE' ;
 
 BIT_STRING_LITERAL:
-	'B' SINGLE_QUOTE BITFrag+ SINGLE_QUOTE -> type(LITERAL);
+	'B' SINGLE_QUOTE BITFrag+ SINGLE_QUOTE ;
 
 fragment BITFrag: [01];
 
 MONEY_LITERAL:
-	[$\u00A2\u00A3\u00A4\u00A5] NUMBER_LITERAL -> type(LITERAL);
+	[$\u00A2\u00A3\u00A4\u00A5] NUMBER_LITERAL ;
 
-HEX_LITERAL: ('0' 'X' (( NEW_LINE_STRING | HEX_REP)+ |)) -> type(LITERAL);
+HEX_LITERAL: ('0' 'X' (( NEW_LINE_STRING | HEX_REP)+ |)) ;
 // {
 //       raw = self.text
 //       # Remove \r and \n that come after backslash
@@ -339,7 +338,7 @@ fragment NEW_LINE_STRING: '\\' '\r'? '\n';
 STRING_LITERAL:
 	(
 		SINGLE_QUOTE (ESCAPED_QUOTE | NEW_LINE_STRING | ~['\r\n])* SINGLE_QUOTE
-	)-> type(LITERAL);
+	);
 
 // {
 //   raw = self.text
@@ -354,7 +353,7 @@ STRING_LITERAL:
 //   self.text = raw
 // };
 
-UNICODE_STRING_LITERAL: ('N' STRING_LITERAL)-> type(LITERAL);
+UNICODE_STRING_LITERAL: ('N' STRING_LITERAL);
 //  {
 //         raw = self.text
 //         # Remove the N , first and last quote

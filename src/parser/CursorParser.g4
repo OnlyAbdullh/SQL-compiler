@@ -26,8 +26,8 @@ open_cursor: OPEN cursor_name SEMI?;
 
 fetch_row: FETCH   ( (
         NEXT | PRIOR | FIRST | LAST
-        | ABSOLUTE ( LITERAL | USER_VARIABLE )
-        | RELATIVE ( LITERAL | USER_VARIABLE )
+        | ABSOLUTE ( literal | USER_VARIABLE )
+        | RELATIVE ( literal | USER_VARIABLE )
     )? FROM )?
     cursor_name (INTO user_variable_list*)? SEMI?;
 

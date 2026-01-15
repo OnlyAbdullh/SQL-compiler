@@ -11,7 +11,6 @@ create_statement
     | create_user
     ;
 
-
 create_table
     : CREATE TABLE full_table_name create_table_body SEMI?
     ;
@@ -21,7 +20,7 @@ create_table_body
     ;
 
 create_table_element_list
-    : create_table_element (COMMA create_table_element)*
+    : create_table_element (COMMA create_table_element)* COMMA?
     ;
 
 create_table_element
@@ -85,7 +84,7 @@ create_user
 
 create_user_core
     : (FOR | FROM)? LOGIN login_name with_user_options?
-    | WITH PASSWORD EQ LITERAL (COMMA create_user_option)*
+    | WITH PASSWORD EQ literal (COMMA create_user_option)*
     | WITHOUT LOGIN with_user_options?
     ;
 
@@ -100,13 +99,44 @@ create_user_option
 
 default_language_value
     : NONE
-    | LITERAL
+    | literal
     | IDENTIFIER
     ;
 
 login_name: IDENTIFIER;
 
 sid_value
-    : LITERAL
+    : literal
     | IDENTIFIER
     ;
+/*create_function
+    : CREATE (OR ALTER)? FUNCTION function_name function_parameters
+      RETURNS function_return_type
+      (WITH function_options)?
+      (AS)?
+      function_body
+      SEMI?
+    ;
+
+function_options
+    : function_option (COMMA function_option)*
+    ;
+
+function_option
+    : ENCRYPTION
+    | SCHEMABINDING
+    | RETURNS NULL ON NULL INPUT
+    | CALLED ON NULL INPUT
+    | execute_as_clause
+    | INLINE EQ (ON | OFF)
+    ;
+
+execute_as_clause
+    : EXECUTE AS (CALLER | SELF | OWNER | LITERAL)
+    ;
+
+function_body
+    : BEGIN statement* RETURN expression? END
+    | RETURN select_statement
+    | RETURN LPAREN select_statement RPAREN
+    ;*/

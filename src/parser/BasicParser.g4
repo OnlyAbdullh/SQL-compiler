@@ -93,15 +93,15 @@ datatype
     | varbinary_data_type
     ;
 
-decimal_data_type: DECIMAL (LPAREN LITERAL (COMMA LITERAL)? RPAREN)?;
-numeric_data_type: NUMERIC (LPAREN LITERAL (COMMA LITERAL)? RPAREN)? ;
-char_data_type:CHAR (LPAREN LITERAL RPAREN)?;
-nchar_data_type:NCHAR (LPAREN LITERAL RPAREN)?;
-binary_data_type:BINARY (LPAREN LITERAL RPAREN)?;
-varchar_data_type:NVARCHAR (LPAREN (LITERAL|MAX) RPAREN)?;
-nvarchar_data_type:VARCHAR (LPAREN (LITERAL|MAX) RPAREN)?;
-varbinary_data_type:VARBINARY (LPAREN (LITERAL|MAX) RPAREN)?;
-time_data_type:TIME|DATETIME2|DATETIMEOFFSET (LPAREN LITERAL RPAREN)?;
+decimal_data_type: DECIMAL (LPAREN literal (COMMA literal)? RPAREN)?;
+numeric_data_type: NUMERIC (LPAREN literal (COMMA literal)? RPAREN)? ;
+char_data_type:CHAR (LPAREN literal RPAREN)?;
+nchar_data_type:NCHAR (LPAREN literal RPAREN)?;
+binary_data_type:BINARY (LPAREN literal RPAREN)?;
+varchar_data_type:NVARCHAR (LPAREN (literal|MAX) RPAREN)?;
+nvarchar_data_type:VARCHAR (LPAREN (literal|MAX) RPAREN)?;
+varbinary_data_type:VARBINARY (LPAREN (literal|MAX) RPAREN)?;
+time_data_type:TIME|DATETIME2|DATETIMEOFFSET (LPAREN literal RPAREN)?;
 
 function_call
     : (IDENTIFIER DOT)? (IDENTIFIER|MAX) LPAREN function_arguments? RPAREN
@@ -129,12 +129,14 @@ column_constraint
     | UNIQUE
     | NOT NULL
     | NULL
-    | DEFAULT LITERAL
+    | DEFAULT literal
+    | IDENTITY LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN?
     | IDENTITY
+    | ROWGUIDCOL
     ;
 literal_with_optional_parentheses
-    : LITERAL
-    | LPAREN LITERAL RPAREN
+    : literal
+    | LPAREN literal RPAREN
     ;
 
 table_constraint
@@ -172,7 +174,7 @@ function_parameter
     : USER_VARIABLE AS?  datatype  (NULL | NOT NULL)? (EQ default_value)? (READONLY)?;
 
 default_value
-    : LITERAL
+    : literal
     | NULL
     ;
 
@@ -213,3 +215,5 @@ go_statement: ((USE IDENTIFIER )| GO) SEMI?;
 statement_block: BEGIN SEMI? (statement)+ END SEMI?;
 
 print_clause: PRINT expression SEMI?;
+
+literal: NUMBER_LITERAL |TRUE |FALSE |BIT_STRING_LITERAL |MONEY_LITERAL |HEX_LITERAL |STRING_LITERAL |UNICODE_STRING_LITERAL;

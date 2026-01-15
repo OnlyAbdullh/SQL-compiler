@@ -8,7 +8,7 @@ alter_statement
     | alter_index
     | alter_view
     | alter_user
-    | alter_function
+    // | alter_function
     ;
 
 alter_table
@@ -74,19 +74,13 @@ user_option
     : IDENTIFIER EQ IDENTIFIER
     | DEFAULT_SCHEMA EQ (IDENTIFIER | NULL)
     | LOGIN EQ IDENTIFIER
-    | PASSWORD EQ LITERAL (OLD_PASSWORD EQ LITERAL)?
-    | DEFAULT_LANGUAGE EQ (NONE | LITERAL | IDENTIFIER)
+    | PASSWORD EQ literal (OLD_PASSWORD EQ literal)?
+    | DEFAULT_LANGUAGE EQ (NONE | literal | IDENTIFIER)
     | ALLOW_ENCRYPTED_VALUE_MODIFICATIONS EQ (ON | OFF);
 
-alter_function
-    : ALTER FUNCTION function_name function_parameters? returns_clause function_as function_body SEMI? ;
+/*alter_function
+    : ALTER FUNCTION function_name function_parameters? returns_clause AS? function_body SEMI?;
 
 returns_clause
-    : RETURNS return_data_type ;
+    : RETURNS function_return_type SEMI;*/
 
-function_as : AS? ;
-
-function_body
-    : BEGIN .*? RETURN expression END
-    | RETURN LPAREN? select_statement RPAREN?
-    ;
