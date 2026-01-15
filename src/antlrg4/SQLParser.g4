@@ -29,34 +29,3 @@ if_clause: IF search_condition (statement)+ (ELSE (statement)+ )?;
 //! ╚══════════════════════════════════════════╝
 
 print_clause: PRINT (LITERAL|USER_VARIABLE) SEMI?;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-statement: dml_statement | ddl_statement | variable_statement | cursor_statement | control_flow_statement | go_statement| print_clause;
