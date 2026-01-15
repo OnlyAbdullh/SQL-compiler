@@ -6,7 +6,7 @@ options {
 
 import SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser, OutputParser,CteParser, CreateParser, CursorParser, VariableParser;
 
-tsql_file: statement* EOF;
+program: statement* EOF;
 
 ddl_statement:alter_statement | create_statement;
 dml_statement:with_cte? (select_statement | insert_statement | delete_statement | update_statement);
