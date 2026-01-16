@@ -20,7 +20,29 @@ table_action
     | table_rename_column ;
 
 table_alter_column
-    : ALTER COLUMN full_column_name column_type ;
+    : ALTER COLUMN full_column_name alter_column_action;
+
+alter_column_action
+    : column_type
+      collate_clause?
+      nullability_clause?
+      SPARSE?
+    | alter_column_option_action
+    ;
+collate_clause
+    : COLLATE full_table_name  ;
+
+alter_column_option_action
+    : ADD  alter_column_option
+    | DROP alter_column_option
+    ;
+
+alter_column_option
+    : SPARSE
+    | ROWGUIDCOL
+    | PERSISTED
+    | NOT FOR REPLICATION
+    ;
 
 table_add
     : ADD table_add_item (COMMA table_add_item)*

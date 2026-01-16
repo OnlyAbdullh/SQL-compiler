@@ -131,13 +131,16 @@ computed_column_definition
       PERSISTED?
     ;
 
+
 column_constraint
-    : CONSTRAINT IDENTIFIER DEFAULT default_value_expr
+    : (CONSTRAINT IDENTIFIER)? column_constraint_body
+    ;
+column_constraint_body
+    : DEFAULT default_value_expr
     | PRIMARY KEY (CLUSTERED | NONCLUSTERED)?
     | UNIQUE (CLUSTERED | NONCLUSTERED)?
     | NOT NULL
     | NULL
-    | DEFAULT default_value_expr
     | IDENTITY LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN?
     | IDENTITY
     | ROWGUIDCOL
@@ -149,6 +152,7 @@ column_constraint
 default_value_expr
     : literal
     | niladic_function
+    | function_call
     | LPAREN function_call RPAREN
     ;
 
@@ -172,6 +176,7 @@ constraint_body
     : pk_or_unique_constraint
     | foreign_key_constraint
     | check_constraint
+    | default_constraint
     ;
 
 pk_or_unique_constraint
@@ -189,6 +194,10 @@ foreign_key_constraint
 
 check_constraint
     : CHECK LPAREN search_condition RPAREN ;
+
+default_constraint
+    : DEFAULT default_value_expr FOR full_column_name;
+
 user_name : IDENTIFIER  ;
 
 function_name : full_table_name  ;
