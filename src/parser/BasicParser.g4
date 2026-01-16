@@ -67,7 +67,7 @@ user_variable_list: USER_VARIABLE (COMMA USER_VARIABLE)*;
 operators: EQ | NEQ | LTE | GTE | LT | GT ;
 
 column_type
-    : datatype nullability?;
+    : datatype nullability_clause?;
 
 datatype
     : full_table_name
@@ -115,7 +115,7 @@ function_arguments
     ;
 
 
-nullability
+nullability_clause
     : NULL
     | NOT NULL
     ;
@@ -142,7 +142,9 @@ literal_with_optional_parentheses
     ;
 
 table_constraint
-    : CONSTRAINT IDENTIFIER? constraint_body ;
+    : CONSTRAINT IDENTIFIER? constraint_body
+    | constraint_body
+    ;
 
 constraint_body
     : pk_or_unique_constraint
@@ -201,6 +203,14 @@ table_type_element
     : column_definition
     | table_constraint
     ;
+
+go_statement: ((USE IDENTIFIER )| GO) SEMI?;
+
+statement_block: BEGIN SEMI? (statement)+ END SEMI?;
+
+print_clause: PRINT expression SEMI?;
+
+literal: NUMBER_LITERAL |TRUE |FALSE |BIT_STRING_LITERAL |MONEY_LITERAL |HEX_LITERAL |STRING_LITERAL |UNICODE_STRING_LITERAL;
 /*function_body
     : BEGIN statement* RETURN expression END
     | RETURN select_statement
@@ -211,11 +221,3 @@ function_return_type
     : return_data_type
     | USER_VARIABLE  table_type_definition
     ;*/
-
-go_statement: ((USE IDENTIFIER )| GO) SEMI?;
-
-statement_block: BEGIN SEMI? (statement)+ END SEMI?;
-
-print_clause: PRINT expression SEMI?;
-
-literal: NUMBER_LITERAL |TRUE |FALSE |BIT_STRING_LITERAL |MONEY_LITERAL |HEX_LITERAL |STRING_LITERAL |UNICODE_STRING_LITERAL;

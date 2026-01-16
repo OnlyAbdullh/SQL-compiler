@@ -6,8 +6,31 @@ options {
 
 import BasicParser;
 
-select_statement:
-	with_cte? SELECT select_modifier select_list (INTO full_table_name)? (FROM table_source_list where_clause? group_by_clause? having_clause? order_by_clause?)? SEMI?;
+
+select_statement
+    : with_cte? query_expression order_by_clause? SEMI?;
+
+query_expression
+    : query_specification
+      ( set_operator query_specification )*
+    | LPAREN query_expression RPAREN
+      ( set_operator query_specification )*
+    ;
+
+set_operator
+    : UNION ALL?
+    | EXCEPT
+    | INTERSECT
+    ;
+
+query_specification
+    : SELECT select_modifier select_list
+      (INTO full_table_name)?
+      (FROM table_source_list)?
+      where_clause?
+      group_by_clause?
+      having_clause?
+    ;
 
 select_list
     : STAR
@@ -25,5 +48,12 @@ select_list_element
     | expression (EQ | PLUS_EQ | MINUS_EQ | STAR_EQ | SLASH_EQ | PERCENT_EQ| AMPERSAND_EQ | CARET_EQ | PIPE_EQ) expression
     ;
 
-select_modifier: DISTINCT? select_top_clause?;
+select_modifier
+    :
+    | ALL
+    | DISTINCT
+    | ALL select_top_clause
+    | DISTINCT select_top_clause
+    | select_top_clause
+    ;
 
