@@ -1,13 +1,17 @@
 from generated.SQLParser import SQLParser
 from generated.SQLParserVisitor import SQLParserVisitor
 from .program import Program
-from .statements import PrintStatement, DeleteStatement, WhereClause
+from .statements import PrintStatement, DeleteStatement, WhereClause, SetStatement, StatementBlock
 from .expressions import Literal, Variable, BinaryExpression, UnaryExpression, ComparisonExpression, QuantifiedSubquery, \
     BetweenExpression, LikeExpression, NullCheck, ExistsExpression, InExpression
-from .table import Table
+from .basic import Table, TableName
 
 
 class ASTBuilderVisitor(SQLParserVisitor):
+    ###################################################################
+    #             SQLParser Visit.
+    ###################################################################
+
     def visitProgram(self, ctx: SQLParser.ProgramContext):
         statements = []
         for statement_ctx in ctx.statement():
@@ -17,19 +21,29 @@ class ASTBuilderVisitor(SQLParserVisitor):
 
         return Program(statements)
 
-    def visitStatement(self, ctx):
-        return self.visitChildren(ctx)
 
-    def visitPrint_clause(self, ctx: SQLParser.Print_clauseContext):
-        value = None
-        if ctx.literal():
-            return self.visit(ctx.literal())
-        elif ctx.USER_VARIABLE():
-            value = Variable(ctx.USER_VARIABLE().getText())
+    # no override for ddl
+    # no override for dml
+    # no override for variable_statement
+    # no override for cursor_statement
+    # no override for statement
 
-        return PrintStatement(value)
+    def visitSet_statement(self, ctx: SQLParser.Set_statementContext):
+        on = True if ctx.ON() else False
+        table= self.visit(ctx.full_table_name())
+        return SetStatement(table, on)
+
+    ###################################################################
+    #             ! END OF SQLParser Visit.
+    ###################################################################
+
+
+
+
+
 
     def visitDelete_statement(self, ctx: SQLParser.Delete_statementContext):
+        # TODO : reconstruct this.
         table_ctx = ctx.table_source()
         table_name = table_ctx.getText()
         table = Table(table_name)
@@ -44,13 +58,53 @@ class ASTBuilderVisitor(SQLParserVisitor):
 
         return DeleteStatement(table, where, top)
 
+    ###################################################################
+    #             BasicParser Visitor.
+    ###################################################################
+    def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
+        statements = [self.visit(statement) for statement in ctx.statement()]
+        return StatementBlock(statements)
+
+    def visitWhere_clause(self, ctx):
+        condition = self.visit(ctx.search_condition())
+        return WhereClause(condition)
+
+    def visitDelete_and_update_where_clause(self, ctx: SQLParser.Delete_and_update_where_clauseContext):
+        if ctx.where_clause():
+            return self.visit(ctx.where_clause())
+        cursor = ctx.cursor_name().getText()
+        # TODO : Check Cursor Name
+        return WhereClause(
+            Literal(f"CURRENT OF {cursor}")
+        )
+
+    def visitJoin_clause(self, ctx: SQLParser.Join_clauseContext):
+        join_type = ctx.join_type().getText()
+        table = self.visit(ctx.table_source_item())
+        join_condition = self.visit(ctx.join_condition())
+        # TODO : Should Return Join Node
+        return ""
+
+    def visitHaving_clause(self, ctx: SQLParser.Having_clauseContext):
+        condition = self.visit(ctx.search_condition())
+        # TODO : Should Return Having Node
+        return "Having Node"
+
+    def visitLiteral(self, ctx: SQLParser.LiteralContext):
+        text = "Not Implemented"  # todo COMPLETE THIS
+        return Literal(text)
+
+    ###################################################################
+    #             BasicParser Visit.
+    ###################################################################
+
+    def visitFull_table_name(self, ctx: SQLParser.Full_table_nameContext):
+        parts = [identifier.getText() for identifier in ctx.IDENTIFIER()]
+        return TableName(parts)
 
     ###################################################################
     #             ExpressionParser Visit.
     ###################################################################
-
-    def visitSearch_condition(self, ctx: SQLParser.Search_conditionContext):
-        return self.visit(ctx.or_expression())
 
     def visitOr_expression(self, ctx: SQLParser.Or_expressionContext):
         expr = self.visit(ctx.and_expression(0))
@@ -78,20 +132,6 @@ class ASTBuilderVisitor(SQLParserVisitor):
         if ctx.search_condition():
             return self.visit(ctx.search_condition())
         return self.visit(ctx.predicate())
-
-    def visitPredicate(self, ctx: SQLParser.PredicateContext):
-        if ctx.comparison_predicate():
-            return self.visit(ctx.comparison_predicate())
-        elif ctx.in_predicate():
-            return self.visit(ctx.in_predicate())
-        elif ctx.between_predicate():
-            return self.visit(ctx.between_predicate())
-        elif ctx.like_predicate():
-            return self.visit(ctx.like_predicate())
-        elif ctx.null_predicate():
-            return self.visit(ctx.null_predicate())
-
-        return self.visit(ctx.exists_predicate())
 
     def visitComparison_predicate(self, ctx: SQLParser.Comparison_predicateContext):
 
@@ -139,21 +179,17 @@ class ASTBuilderVisitor(SQLParserVisitor):
         pattern = self.visit(ctx.expression(1))
         return LikeExpression(value, pattern, negated)
 
-
-    def visitNull_predicate(self, ctx:SQLParser.Null_predicateContext):
-        expr= self.visit(ctx.expression())
+    def visitNull_predicate(self, ctx: SQLParser.Null_predicateContext):
+        expr = self.visit(ctx.expression())
         negated = ctx.NOT() is not None
         return NullCheck(expr, negated)
 
-
-    def visitExists_predicate(self, ctx:SQLParser.Exists_predicateContext):
+    def visitExists_predicate(self, ctx: SQLParser.Exists_predicateContext):
         negated = ctx.NOT() is not None
         subquery = self.visit(ctx.derived_table())
         return ExistsExpression(subquery, negated)
 
     # Expression
-    def visitExpression(self, ctx: SQLParser.ExpressionContext):
-        return self.visit(ctx.or_bitwise_expression())
 
     def visitOr_bitwise_expression(self, ctx: SQLParser.Or_bitwise_expressionContext):
         expr = self.visit(ctx.xor_bitwise_expression(0))

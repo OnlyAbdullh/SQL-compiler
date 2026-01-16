@@ -19,9 +19,10 @@
 -- FROM employees t
 -- WHERE t.id = 10;
 
-PRINT 'Hello';
-GO
-PRINT @VAR;
-GO
+--PRINT 'Hello';
+--GO
+--PRINT @VAR;
+--GO
 
-DELETE FROM employees WHERE id = 5;
+--DELETE FROM emp WHERE id = 10;
+--DELETE FROM emp WHERE CURRENT OF cur1;

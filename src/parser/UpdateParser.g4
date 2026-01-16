@@ -6,7 +6,7 @@ options {
 import BasicParser, OutputParser, CursorParser;
 
 update_statement :
-UPDATE top_clause? (full_table_name| USER_VARIABLE) SET assignment_list output_clause? (FROM table_source_list)? delete_and_update_where_clause? SEMI? ;
+with_cte? UPDATE top_clause? (full_table_name| USER_VARIABLE) SET assignment_list output_clause? (FROM table_source_list)? delete_and_update_where_clause? SEMI? ;
 
 assignment_list: assignment (COMMA assignment)*;
 

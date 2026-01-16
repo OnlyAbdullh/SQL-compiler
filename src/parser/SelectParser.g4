@@ -7,7 +7,7 @@ options {
 import BasicParser;
 
 select_statement:
-	SELECT select_modifier select_list (INTO full_table_name)? (FROM table_source_list where_clause? group_by_clause? having_clause? order_by_clause?)? SEMI?;
+	with_cte? SELECT select_modifier select_list (INTO full_table_name)? (FROM table_source_list where_clause? group_by_clause? having_clause? order_by_clause?)? SEMI?;
 
 select_list
     : STAR

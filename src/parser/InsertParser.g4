@@ -7,6 +7,7 @@ options {
 import BasicParser,SelectParser,OutputParser;
 
 insert_statement:
+    with_cte?
 	INSERT
 	top_clause?
 	INTO?
