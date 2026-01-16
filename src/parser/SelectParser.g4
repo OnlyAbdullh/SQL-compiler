@@ -12,16 +12,12 @@ select_statement
 
 query_expression
     : query_specification
-      ( set_operator query_specification )*
+      ( set_operators query_specification )*
     | LPAREN query_expression RPAREN
-      ( set_operator query_specification )*
+      ( set_operators query_specification )*
     ;
 
-set_operator
-    : UNION ALL?
-    | EXCEPT
-    | INTERSECT
-    ;
+
 
 query_specification
     : SELECT select_modifier select_list
@@ -47,6 +43,14 @@ select_list_element
     : expression as_alias?
     | expression (EQ | PLUS_EQ | MINUS_EQ | STAR_EQ | SLASH_EQ | PERCENT_EQ| AMPERSAND_EQ | CARET_EQ | PIPE_EQ) expression
     ;
+
+
+top_count
+    : expression
+    | LPAREN expression RPAREN
+    ;
+select_top_clause: TOP top_count PERCENT?;
+
 
 select_modifier
     :

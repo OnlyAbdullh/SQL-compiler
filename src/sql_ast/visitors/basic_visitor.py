@@ -2,7 +2,8 @@ from generated.SQLParser import SQLParser
 from generated.SQLParserVisitor import SQLParserVisitor
 from ..ast_nodes.statements import *
 from ..ast_nodes.expressions import *
-from ..ast_nodes.basic import *
+from ..ast_nodes.basic_nodes import *
+
 
 class BasicVisitor(SQLParserVisitor):
     def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
@@ -49,3 +50,40 @@ class BasicVisitor(SQLParserVisitor):
 
     def visitDerived_table(self, ctx: SQLParser.Derived_tableContext):
         return self.visit(ctx.select_statement())
+
+    def visitAs_alias(self, ctx: SQLParser.As_aliasContext):
+        return self.visit(ctx.expression())
+
+    def visitSet_operators(self, ctx):
+        if ctx.UNION():
+            return "UNION ALL" if ctx.ALL() else "UNION"
+        return ctx.getText()
+
+    def visitFunction_call(self, ctx: SQLParser.Function_callContext):
+        schema = None
+        if ctx.DOT():
+            schema = ctx.IDENTIFIER(0)
+            name = ctx.IDENTIFIER(1)
+        else:
+            name = ctx.getChild(0).getText()
+
+        args = []
+        if ctx.function_arguments():
+            args = self.visit(ctx.function_arguments())
+
+        return FunctionCall(name, args, schema)
+
+    def visitFunction_arguments(self, ctx: SQLParser.Function_argumentsContext):
+        if ctx.STAR():
+            return ['*']
+        args = []
+
+        exprs = ctx.expression()
+        aliases = ctx.as_alias()
+
+        for i, expr_ctx in enumerate(exprs):
+            expr = self.visit(expr_ctx)
+            alias = self.visit(aliases[i]) if i < len(aliases) else None
+            args.append(FunctionArg(expr, alias))
+
+        return args

@@ -61,7 +61,7 @@
 --a & b
 --a | b ^ c & d
 --(((a)))
-a IN (a + b * c,- -5 , 5+ 10, a | b ^ c & d,(((a))))
+--a IN (a + b * c,- -5 , 5+ 10, a | b ^ c & d,(((a))))
 --a IN (1, 2) AND (b BETWEEN 3 AND 4 OR c IS NULL)
 --NOT (a = 1 AND b IN (SELECT id FROM t)) OR c IS NOT NULL
 -- ERRORS TESTS
@@ -72,3 +72,13 @@ a IN (a + b * c,- -5 , 5+ 10, a | b ^ c & d,(((a))))
 
 
 
+USE AdventureWorks2022;
+GO
+
+SELECT ProductID, OrderQty, SUM(LineTotal) AS Total
+FROM Sales.SalesOrderDetail
+WHERE UnitPrice < $5.00
+GROUP BY ProductID, OrderQty
+ORDER BY ProductID, OrderQty
+--OPTION (HASH GROUP, FAST 10);
+GO

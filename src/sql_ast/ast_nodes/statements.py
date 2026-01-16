@@ -1,6 +1,5 @@
 from .ast_node import ASTNode
 
-
 class PrintStatement(ASTNode):
     def __init__(self, value):
         self.value = value
@@ -32,8 +31,8 @@ class WhereClause(ASTNode):
     def __init__(self, condition):
         self.condition = condition
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level , self.condition)
-        self.condition.print(level + 1)
+        self.self_print(spacer * level )
+        self.condition.print(spacer , level + 1)
 
 class SetStatement(ASTNode):
     def __init__(self, table, on = False):

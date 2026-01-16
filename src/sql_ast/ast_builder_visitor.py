@@ -3,12 +3,13 @@ from generated.SQLParserVisitor import SQLParserVisitor
 from sql_ast.ast_nodes.program import Program
 from sql_ast.ast_nodes.statements import DeleteStatement, WhereClause, SetStatement, StatementBlock
 from sql_ast.ast_nodes.expressions import Literal
-from sql_ast.ast_nodes.basic import Table, TableRef, ColumnRef
+from sql_ast.ast_nodes.basic_nodes import Table, TableRef, ColumnRef
 from sql_ast.visitors.basic_visitor import BasicVisitor
 from sql_ast.visitors.expression_visitor import ExpressionVisitor
+from sql_ast.visitors.select_visitor import SelectVisitor
 
 
-class ASTBuilderVisitor(ExpressionVisitor , BasicVisitor):
+class ASTBuilderVisitor(ExpressionVisitor, BasicVisitor,SelectVisitor  ):
     ###################################################################
     #             SQLParser Visit.
     ###################################################################

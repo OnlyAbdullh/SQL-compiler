@@ -53,11 +53,7 @@ top_clause: TOP LPAREN expression RPAREN PERCENT?;
 
 set_operators: (UNION ALL?) | EXCEPT | INTERSECT;
 
-top_count
-    : expression
-    | LPAREN expression RPAREN
-    ;
-select_top_clause: TOP top_count PERCENT?;
+
 
 full_column_name: (IDENTIFIER | DELETED | INSERTED) (DOT IDENTIFIER)*;
 column_list: LPAREN full_column_name (COMMA full_column_name)* RPAREN;
