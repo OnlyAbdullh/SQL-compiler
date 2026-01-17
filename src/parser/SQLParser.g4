@@ -4,7 +4,7 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import ExtraParser,SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser, OutputParser,CteParser, CreateParser, CursorParser, VariableParser, ControlFlowParser,DropParser, TruncateParser;
+import SelectParser , InsertParser ,DeleteParser,UpdateParser,AlterParser, OutputParser,CteParser, CreateParser, CursorParser, VariableParser, ControlFlowParser,DropParser, TruncateParser;
 
 
 program: statement* EOF;
