@@ -339,35 +339,79 @@ fragment NEW_LINE_STRING: '\\' '\r'? '\n';
 
 STRING_LITERAL:
 	(
-		SINGLE_QUOTE (ESCAPED_QUOTE | NEW_LINE_STRING | ~['\r\n])* SINGLE_QUOTE
-	);
+		SINGLE_QUOTE (ESCAPED_QUOTE | NEW_LINE_STRING | ~['])* SINGLE_QUOTE
+	) {
+raw = self.text
+# Remove the first and last quote
+raw = raw[1:-1]
+ln = len(raw)
+i = 0
+ln = len(raw)
+txt = ""
+after_newline = False
 
-// {
-//   raw = self.text
-//   # Remove the first and last quote
-//   raw = raw[1:-1]
-//   # Replace doubled single quotes with one single quote
-//   raw = raw.replace("''", "'")
-//   # Remove \r and \n that come after backslash
-//   raw = raw.replace("\\\r\n", "")  # Windows line ending
-//   raw = raw.replace("\\\n", "")    # Unix line ending
-//   raw = raw.replace("\\\r", "")    # Old Mac line ending
-//   self.text = raw
-// };
+while i < ln:
+    if raw[i] == '\\' and i + 1 < ln and raw[i + 1] in ('\n', '\r'):
+        i += 2
+        if i < ln and raw[i - 1] == '\r' and raw[i] == '\n':
+            i += 1
+        after_newline = True
+        continue
 
-UNICODE_STRING_LITERAL: ('N' STRING_LITERAL);
-//  {
-//         raw = self.text
-//         # Remove the N , first and last quote
-//         raw = raw[2:-1]
-//         # Replace doubled single quotes with one single quote
-//         raw = raw.replace("''", "'")
-//         # Remove \r and \n that come after backslash
-//         raw = raw.replace("\\\r\n", "")  # Windows line ending
-//         raw = raw.replace("\\\n", "")    # Unix line ending
-//         raw = raw.replace("\\\r", "")    # Old Mac line ending
-//         self.text = raw
-//       };
+    if raw[i] in ('\n', '\r'):
+        if not after_newline:
+            txt += " "
+        after_newline = True
+        i += 1
+        if i < ln and raw[i - 1] == '\r' and raw[i] == '\n':
+            i += 1
+        continue
+
+    if after_newline and raw[i] in (' ', '\t'):
+        i += 1
+        continue
+
+    after_newline = False
+    txt += raw[i]
+    i += 1
+self.text = txt
+ };
+
+UNICODE_STRING_LITERAL: ('N' STRING_LITERAL){
+raw = self.text
+raw = raw[2:-1]
+ln = len(raw)
+i = 0
+ln = len(raw)
+txt = ""
+after_newline = False
+
+while i < ln:
+    if raw[i] == '\\' and i + 1 < ln and raw[i + 1] in ('\n', '\r'):
+        i += 2
+        if i < ln and raw[i - 1] == '\r' and raw[i] == '\n':
+            i += 1
+        after_newline = True
+        continue
+
+    if raw[i] in ('\n', '\r'):
+        if not after_newline:
+            txt += " "
+        after_newline = True
+        i += 1
+        if i < ln and raw[i - 1] == '\r' and raw[i] == '\n':
+            i += 1
+        continue
+
+    if after_newline and raw[i] in (' ', '\t'):
+        i += 1
+        continue
+
+    after_newline = False
+    txt += raw[i]
+    i += 1
+self.text = txt
+       };
 
 fragment SINGLE_QUOTE: '\'';
 fragment ESCAPED_QUOTE: '\'\'';
@@ -431,7 +475,7 @@ PIPE_EQ: '|=';
 //! ╚═══════════════════════════════════════════════╝
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '--' ~[\r\n]* -> skip;
-BLOCK_COMMENT: '/*' (BLOCK_COMMENT | .)*? '*/' -> skip;
+BLOCK_COMMENT: ('/*' (BLOCK_COMMENT | .)*? '*/' )-> skip;
 
 
 fragment DIGIT: [0-9];
