@@ -4,14 +4,14 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import BasicParser,SelectParser,OutputParser;
+import BasicParser,SelectParser,OutputParser,ExtraParser;
 
 insert_statement:
     with_cte?
 	INSERT
 	top_clause?
 	INTO?
-	(full_table_name | USER_VARIABLE)
+	(full_table_name | user_variable)
 	column_list?
 	output_clause?
 	insert_source SEMI?;

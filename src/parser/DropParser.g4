@@ -3,7 +3,7 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import BasicParser;
+import BasicParser,ExtraParser;
 drop_statement
     : DROP drop_object SEMI?
     ;

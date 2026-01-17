@@ -4,7 +4,7 @@ options {
 	tokenVocab = SQLLexer;
 }
 
-import BasicParser, OutputParser, CursorParser;
+import BasicParser, OutputParser, CursorParser,ExtraParser;
 
 
 delete_statement
