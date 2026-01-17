@@ -4,12 +4,13 @@ from generated.SQLParser import SQLParser
 from generated.SQLParserVisitor import SQLParserVisitor
 from .basic_visitor import BasicVisitor
 from .expression_visitor import ExpressionVisitor
-from ..ast_nodes.expressions import BinaryExpression
+from ..ast_nodes.expression_nodes import BinaryExpression
 from ..ast_nodes.select_nodes import SelectStatement, SelectQuantifier, TopSpec, StarSelectItem, TableStarSelectItem, \
     AssignmentSelectItem, ExpressionSelectItem, QuerySpecification, QueryExpression
 
 
 class SelectVisitor(SQLParserVisitor):
+
     def visitSelect_statement(self, ctx: SQLParser.Select_statementContext):
         query_expression = self.visit(ctx.query_expression())
         with_cte = self.visit(ctx.with_cte()) if ctx.with_cte() else None

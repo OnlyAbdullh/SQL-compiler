@@ -1,5 +1,14 @@
 from .ast_node import ASTNode
 
+
+class SingleExpressionNode(ASTNode):
+    def __init__(self, expression):
+        self.expression = expression
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        self.expression.print(spacer , level + 1)
+
 class ExpressionAlaisNode(ASTNode):
     def __init__(self, expression, alias=None):
         self.expression = expression
@@ -9,11 +18,16 @@ class ExpressionAlaisNode(ASTNode):
         self.self_print(spacer * level)
         self.expression.print(spacer, level + 1)
         if self.alias:
-            print(spacer * (level + 1), "Alias:")
-            self.alias.print(spacer, level + 2)
+            self.alias.print(spacer, level + 1)
 
 
-class TableRef(ASTNode): # full_table_name
+class Alias(SingleExpressionNode):
+    pass
+
+class Having(SingleExpressionNode):
+    pass
+
+class Table(ASTNode):  # full_table_name
     def __init__(self, parts):
         self.parts = parts
 
@@ -21,7 +35,7 @@ class TableRef(ASTNode): # full_table_name
         self.self_print(spacer * level, ".".join(self.parts))
 
 
-class ColumnRef(ASTNode):
+class ColumnOrTable(ASTNode):
     def __init__(self, parts):
         self.parts = parts
 
@@ -48,6 +62,23 @@ class FunctionCall(ASTNode):
 
 class FunctionArg(ExpressionAlaisNode):
     pass
+
+
+
+class DerivedTable(SingleExpressionNode):
+    pass
+
+class TableSourceItem(ExpressionAlaisNode):
+    pass
+
+class TableSourceList(ASTNode):
+    def __init__(self, sources):
+        self.sources = sources
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        for i, src in enumerate(self.sources):
+            src.print(spacer, level+1)
 
 
 class JoinType(ASTNode):

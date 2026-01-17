@@ -46,7 +46,7 @@ derived_table
     : LPAREN select_statement RPAREN
     ;
 
-as_alias: AS? expression;
+as_alias: AS? expression; // TODO : Check it .
 
 full_table_name: IDENTIFIER (DOT IDENTIFIER)*;
 

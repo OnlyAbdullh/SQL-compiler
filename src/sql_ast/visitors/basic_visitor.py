@@ -1,7 +1,7 @@
 from generated.SQLParser import SQLParser
 from generated.SQLParserVisitor import SQLParserVisitor
 from ..ast_nodes.statements import *
-from ..ast_nodes.expressions import *
+from ..ast_nodes.expression_nodes import *
 from ..ast_nodes.basic_nodes import *
 
 
@@ -45,29 +45,28 @@ class BasicVisitor(SQLParserVisitor):
 
         return JoinType("INNER")
 
+
     def visitHaving_clause(self, ctx: SQLParser.Having_clauseContext):
-        condition = self.visit(ctx.search_condition())
-        # TODO : Should Return Having Node
-        return "Having Node"
+        return Having(self.visit(ctx.search_condition()))
 
     def visitLiteral(self, ctx: SQLParser.LiteralContext):
         return Literal(ctx.getText())
 
     def visitFull_table_name(self, ctx: SQLParser.Full_table_nameContext):
         parts = [identifier.getText() for identifier in ctx.IDENTIFIER()]
-        return TableRef(parts)
+        return Table(parts)
 
     def visitFull_column_name(self, ctx: SQLParser.Full_column_nameContext):
         parts = [ctx.getChild(0).getText()]
         for ident in ctx.IDENTIFIER()[1:]:
             parts.append(ident.getText())
-        return ColumnRef(parts)
+        return ColumnOrTable(parts)
 
     def visitDerived_table(self, ctx: SQLParser.Derived_tableContext):
-        return self.visit(ctx.select_statement())
+        return DerivedTable(self.visit(ctx.select_statement()))
 
     def visitAs_alias(self, ctx: SQLParser.As_aliasContext):
-        return self.visit(ctx.expression())
+        return Alias(self.visit(ctx.expression()))
 
     def visitSet_operators(self, ctx):
         if ctx.UNION():
@@ -103,8 +102,14 @@ class BasicVisitor(SQLParserVisitor):
 
         return args
 
-    def visitTable_source_item(self, ctx:SQLParser.Table_source_itemContext):
-        as_alias = self.visit(ctx.as_alias()) if ctx.as_alias() else None
+    def visitTable_source_item(self, ctx: SQLParser.Table_source_itemContext):
 
         if ctx.full_table_name():
-            return self.visit(ctx.full_table_name())
+            src = self.visit(ctx.full_table_name())
+        elif ctx.derived_table():
+            src = self.visit(ctx.derived_table())
+        else:
+            src = Variable(ctx.USER_VARIABLE().getText())
+
+        as_alias = self.visit(ctx.as_alias()) if ctx.as_alias() else None
+        return TableSourceItem(src, as_alias)

@@ -1,5 +1,5 @@
 from .ast_node import ASTNode
-from .expressions import BinaryExpression
+from .expression_nodes import BinaryExpression
 from .basic_nodes import ExpressionAlaisNode
 
 

@@ -1,12 +1,12 @@
-'super''\\\\AZ\
-c'
-N'super''\\\\AZ
-
-    c
-    d'
+--'super''\\\\AZ\
+--c'
+--N'super''\\\\AZ
+--
+--    c
+--    d'
 --SELECT 'super''\\\\AZ \
 --                                     c'
----- SELECT * FROM t WHERE (a = 1 OR b = 2);
+-- SELECT * FROM t WHERE (a = 1 OR b = 2);
 ---- SELECT * FROM users WHERE id = 10 AND age > 20;
 --
 ---- SELECT * FROM t WHERE a = 1 AND b = 2;
@@ -78,8 +78,11 @@ N'super''\\\\AZ
 ----a == 5
 ----DELETE FROM emp WHERE CURRENT OF cur1;
 --
---SELECT *
---FROM A FULL OUTER JOIN B as table2222 ON A.id = B.id
+SELECT *
+FROM A FULL OUTER JOIN B as table2222 ON A.id = B.id
+
+select * from teacher as t.s
+
 --
 ----select ``
 --

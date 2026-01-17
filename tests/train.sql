@@ -99,8 +99,8 @@ CREATE TABLE EmployeeMaster
       salary int
 )
 
---TRUNCATE TABLE EmployeeMaster;
---GO;
+TRUNCATE TABLE EmployeeMaster;
+GO;
 
 
 
