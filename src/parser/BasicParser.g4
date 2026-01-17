@@ -252,3 +252,10 @@ function_return_type
     : return_data_type
     | USER_VARIABLE  table_type_definition
     ;*/
+
+
+with_partition_number_expression:WITH LPAREN PARTITIONS partition_number_expression RPAREN;
+
+partition_number_expression: LPAREN (range | literal) (COMMA (range | literal))*  RPAREN;
+
+range: literal TO literal;
