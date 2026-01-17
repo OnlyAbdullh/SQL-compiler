@@ -63,6 +63,9 @@ user_variable_list: USER_VARIABLE (COMMA USER_VARIABLE)*;
 
 operators: EQ | NEQ | LTE | GTE | LT | GT ;
 
+
+// TODO : complete from here
+
 column_type
     : datatype SPARSE? nullability_clause?;
 
@@ -159,6 +162,7 @@ niladic_function
     | CURRENT_USER
     ;
 
+
 literal_with_optional_parentheses
     : literal
     | LPAREN literal RPAREN
@@ -169,6 +173,7 @@ table_constraint
     | constraint_body
     ;
 
+// no override
 constraint_body
     : pk_or_unique_constraint
     | foreign_key_constraint

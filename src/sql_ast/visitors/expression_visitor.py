@@ -53,8 +53,6 @@ class ExpressionVisitor(SQLParserVisitor):
 
         return QuantifiedSubquery(quantifier, select_st)
 
-    def visitOperators(self, ctx: SQLParser.OperatorsContext):
-        return ctx.getText()
 
     def visitIn_predicate(self, ctx: SQLParser.In_predicateContext):
         expr = self.visit(ctx.expression())

@@ -77,6 +77,7 @@ class SetOperator(ASTNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level, self.operator)
 
+
 class SingleExpressionNode(ASTNode):
     def __init__(self, expression):
         self.expression = expression
@@ -218,3 +219,19 @@ class TableSource(ASTNode):
         if self.joins:
             for join in self.joins:
                 join.print(spacer, level + 2)
+
+
+class ItemsList(ASTNode):
+    def __init__(self, items):
+        self.items = items
+
+    def print(self, spacer="  ", level=0):
+        for item in self.items:
+            item.print(spacer, level + 1)
+
+
+class ColumnList(ItemsList):
+    pass
+
+class UserVariableList(ItemsList):
+    pass

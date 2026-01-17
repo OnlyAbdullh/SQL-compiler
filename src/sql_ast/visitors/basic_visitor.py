@@ -5,6 +5,7 @@ from generated.SQLParserVisitor import SQLParserVisitor
 
 # from ..ast_nodes.expression_nodes import *
 from ..ast_nodes.basic_nodes import *
+from ..ast_nodes.select_nodes import TopSpec
 
 
 class BasicVisitor(SQLParserVisitor):
@@ -112,13 +113,18 @@ class BasicVisitor(SQLParserVisitor):
     def visitAs_alias(self, ctx: SQLParser.As_aliasContext):
         return Alias(self.visit(ctx.expression()))
 
-    # Literal
-    def visitLiteral(self, ctx: SQLParser.LiteralContext):
-        return Literal(ctx.getText())
-
     def visitFull_table_name(self, ctx: SQLParser.Full_table_nameContext):
         parts = [identifier.getText() for identifier in ctx.IDENTIFIER()]
         return Table(parts)
+
+    def visitTop_clause(self, ctx: SQLParser.Top_clauseContext):
+        return TopSpec(self.visit(ctx.expression()), ctx.PERCENT() is not None)
+
+    def visitSet_operators(self, ctx):
+
+        if ctx.UNION():
+            return SetOperator("UNION ALL" if ctx.ALL() else "UNION")
+        return SetOperator(ctx.getText())
 
     def visitFull_column_name(self, ctx: SQLParser.Full_column_nameContext):
         parts = [ctx.getChild(0).getText()]
@@ -126,11 +132,19 @@ class BasicVisitor(SQLParserVisitor):
             parts.append(ident.getText())
         return ColumnOrTable(parts)
 
-    def visitSet_operators(self, ctx):
+    def visitColumn_list(self, ctx: SQLParser.Column_listContext):
+        return ColumnList([self.visit(col) for col in ctx.full_column_name()])
 
-        if ctx.UNION():
-            return SetOperator("UNION ALL" if ctx.ALL() else "UNION")
-        return SetOperator(ctx.getText())
+    def visitUser_variable_list(self, ctx: SQLParser.User_variable_listContext):
+        return UserVariableList([Variable(var.getText()) for var in ctx.USER_VARIABLE()])
+
+    def visitOperators(self, ctx: SQLParser.OperatorsContext):
+        return ctx.getText()
+
+        # Literal
+
+    def visitLiteral(self, ctx: SQLParser.LiteralContext):
+        return Literal(ctx.getText())
 
     def visitFunction_call(self, ctx: SQLParser.Function_callContext):
         schema = None
