@@ -299,7 +299,6 @@ return_data_type
 
 index_name : IDENTIFIER;
 
-
 view_attribute
     : ENCRYPTION
     | SCHEMABINDING

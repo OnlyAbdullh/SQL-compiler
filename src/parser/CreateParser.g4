@@ -14,20 +14,43 @@ create_statement
     ;
 
 create_table
-    : CREATE TABLE full_table_name create_table_body SEMI?
-    ;
+    : CREATE TABLE full_table_name create_table_body SEMI?;
 
 create_table_body
-    : LPAREN create_table_element_list RPAREN
-    ;
+    : LPAREN create_table_element_list RPAREN;
 
 create_table_element_list
-    : create_table_element (COMMA create_table_element)* COMMA?
-    ;
+    : create_table_element (COMMA create_table_element)* COMMA?;
 
 create_table_element
     : column_definition
     | table_constraint
+    | table_index
+    ;
+table_index
+    : INDEX index_name table_index_body;
+
+table_index_body
+    : table_index_rowstore
+    | table_index_columnstore
+    ;
+
+table_index_rowstore
+    : (UNIQUE)? (CLUSTERED | NONCLUSTERED)?
+      LPAREN index_column (COMMA index_column)* RPAREN
+      include_clause?
+      where_clause_for_index?
+      index_with_clause?
+      index_on_clause?
+    ;
+
+table_index_columnstore
+    : (CLUSTERED | NONCLUSTERED)? COLUMNSTORE
+      (LPAREN index_column (COMMA index_column)* RPAREN)?
+      include_clause?
+      where_clause_for_index?
+      index_with_clause?
+      index_on_clause?
     ;
 
 create_index
