@@ -84,10 +84,18 @@ reorganize_option
     : LOB_COMPACTION EQ (ON | OFF) ;
 
 alter_view
-    : ALTER VIEW full_table_name column_list?
-      view_attribute?
-      AS select_statement view_check_option? SEMI?
+    : ALTER VIEW full_table_name
+      column_list?
+      view_attribute_clause?
+      AS select_statement
+      view_check_option?
+      SEMI?
     ;
+
+view_attribute_clause: WITH view_attribute_list;
+
+view_attribute_list
+    : view_attribute (COMMA view_attribute)* ;
 
 alter_user
     : ALTER USER user_name WITH user_option (COMMA user_option)* SEMI?;
