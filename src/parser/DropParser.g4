@@ -27,7 +27,11 @@ drop_user
     : USER if_exists? user_name
     ;
 drop_index
-    : INDEX if_exists? index_name ON full_table_name
+    : INDEX drop_index_item (COMMA drop_index_item)*
+    ;
+
+drop_index_item
+    : if_exists? index_name ON full_table_name
     ;
 
 if_exists
