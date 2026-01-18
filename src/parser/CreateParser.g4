@@ -10,6 +10,7 @@ create_statement
     | create_view
     | create_user
     | create_login
+    | grant_statement
     ;
 
 create_table
@@ -127,6 +128,15 @@ sid_value
     : literal
     | IDENTIFIER
     ;
+
+grant_statement
+    : GRANT IMPERSONATE ON grant_target TO full_table_name SEMI?
+    ;
+
+grant_target
+    : USER DOUBLE_COLON user_name;
+
+
 /*create_function
     : CREATE (OR ALTER)? FUNCTION function_name function_parameters
       RETURNS function_return_type
