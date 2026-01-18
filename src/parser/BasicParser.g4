@@ -67,43 +67,49 @@ operators: EQ | NEQ | LTE | GTE | LT | GT ;
 // TODO : complete from here
 
 column_type
-    : datatype SPARSE? nullability_clause?;
+    : datatype SPARSE? nullability_clause;
+
+nullability_clause
+    : NULL?
+    | NOT NULL
+    ;
 
 datatype
     : full_table_name
-    | INT
+    | single_word_data_type
+    | decimal_numeric_data_type
+    | char_nchar_binary_data_type
+    | varchar_nvarchar_varbinary_data_type
+    | time_data_type
+
+    ;
+
+single_word_data_type: INT
     | BIGINT
     | SMALLINT
     | TINYINT
     | UNIQUEIDENTIFIER
     | MONEY
-    | decimal_data_type
-    | numeric_data_type
     | FLOAT
     | REAL
     | BIT
-    | char_data_type
-    | nchar_data_type
-    | varchar_data_type
-    | nvarchar_data_type
     | TEXT
     | NTEXT
     | DATE
-    | DATETIME
-    | time_data_type
-    | binary_data_type
-    | varbinary_data_type
-    ;
+    | DATETIME;
 
-decimal_data_type: DECIMAL (LPAREN literal (COMMA literal)? RPAREN)?;
-numeric_data_type: NUMERIC (LPAREN literal (COMMA literal)? RPAREN)? ;
-char_data_type:CHAR (LPAREN literal RPAREN)?;
-nchar_data_type:NCHAR (LPAREN literal RPAREN)?;
-binary_data_type:BINARY (LPAREN literal RPAREN)?;
-varchar_data_type:NVARCHAR (LPAREN (literal|MAX) RPAREN)?;
-nvarchar_data_type:VARCHAR (LPAREN (literal|MAX) RPAREN)?;
-varbinary_data_type:VARBINARY (LPAREN (literal|MAX) RPAREN)?;
-time_data_type: TIME (LPAREN literal RPAREN)? | DATETIME2 (LPAREN literal RPAREN)? | DATETIMEOFFSET (LPAREN literal RPAREN)?;
+decimal_numeric_data_type:( DECIMAL|NUMERIC) literal_pair?;
+literal_pair : LPAREN literal (COMMA literal)? RPAREN;
+
+char_nchar_binary_data_type:(CHAR |NCHAR |BINARY) paren_literal?;
+
+
+varchar_nvarchar_varbinary_data_type: (VARCHAR| NVARCHAR  |VARBINARY) paren_literal_max?;
+
+time_data_type: (TIME| DATETIME2 | DATETIMEOFFSET ) paren_literal?;
+
+paren_literal:LPAREN literal RPAREN;
+paren_literal_max: LPAREN (literal|MAX) RPAREN;
 
 function_call
     : (IDENTIFIER DOT)? (IDENTIFIER|MAX) LPAREN function_arguments? RPAREN
@@ -115,10 +121,6 @@ function_arguments
     ;
 
 
-nullability_clause
-    : NULL
-    | NOT NULL
-    ;
 
 column_definition
     : full_column_name column_type column_constraint*
@@ -165,7 +167,7 @@ niladic_function
 
 literal_with_optional_parentheses
     : literal
-    | LPAREN literal RPAREN
+    | paren_literal
     ;
 
 table_constraint

@@ -25,7 +25,7 @@ table_alter_column
 alter_column_action
     : column_type
       collate_clause?
-      nullability_clause?
+      nullability_clause? // todo : check if i can remove the ? if it has a defaulf value of null
       SPARSE?
     | alter_column_option_action
     ;

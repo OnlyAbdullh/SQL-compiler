@@ -8,6 +8,7 @@ from ..ast_nodes.basic_nodes import *
 from ..ast_nodes.select_nodes import TopSpec
 
 
+
 class BasicVisitor(SQLParserVisitor):
     # Statement Block
     def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
@@ -142,6 +143,46 @@ class BasicVisitor(SQLParserVisitor):
         return ctx.getText()
 
         # Literal
+
+
+    def visitColumn_type(self, ctx:SQLParser.Column_typeContext):
+        data_type = self.visit(ctx.datatype())
+        sparse = ctx.SPARSE() is not None
+        null_clause = self.visit(ctx.nullability_clause())
+        return ColumnType(data_type, sparse, null_clause)
+
+    def visitNullability_clause(self, ctx:SQLParser.Nullability_clauseContext):
+        return NullClause(ctx.NOT() is not None)
+
+    # no override for datatype
+
+    def visitSingle_word_data_type(self, ctx:SQLParser.Single_word_data_typeContext):
+        return DataType(ctx.getText())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def visitLiteral(self, ctx: SQLParser.LiteralContext):
         return Literal(ctx.getText())

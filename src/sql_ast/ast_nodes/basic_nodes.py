@@ -233,5 +233,40 @@ class ItemsList(ASTNode):
 class ColumnList(ItemsList):
     pass
 
+
 class UserVariableList(ItemsList):
     pass
+
+
+class NullClause(ASTNode):
+    def __init__(self, nullable: bool):
+        self.nullable = nullable
+
+    def print(self, spacer="  ", level=0):
+        print(f"{spacer * level}Nullability: {'NULL' if self.nullable else 'NOT NULL'}")
+
+
+class ColumnType(ASTNode):
+    def __init__(self, data_type, sparse=False, nullable=None):
+        self.data_type = data_type
+        self.sparse = sparse
+        self.nullable = nullable
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * level, "Column Type")
+        self.data_type.print(spacer, level + 1)
+        if self.sparse:
+            print(spacer * level, "Sparse")
+        if self.nullable:
+            self.nullable.print(spacer, level + 1)
+
+
+class DataType(ASTNode):
+    def __init__(self, name, params=None):
+        self.name = name
+        self.params = params
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * level,f"DataType:  {self.name}")
+        if self.params:
+            self.params.print(spacer, level + 1)
