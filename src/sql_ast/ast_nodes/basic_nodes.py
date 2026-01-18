@@ -431,3 +431,30 @@ class DefaultTableConstraint(ASTNode):
         self.column.print(spacer, level + 2)
         print(spacer * (level + 1), "DEFAULT VALUE :")
         self.default_value.print(spacer, level + 2)
+
+
+class TableTypeDefinition(ASTNode):
+    def __init__(self, lst):
+        self.list = lst
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * level, "TABLE TYPE DEFINITION :")
+        self.list.print(spacer, level + 2)
+
+
+class GoStatement(ASTNode):
+    def __init__(self, id=None):
+        self.id = id
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * level, "GO STATEMENT :")
+        if self.id:
+            print(spacer * (level+1), f"Use : {self.id}")
+
+class PrintClause(ASTNode):
+    def __init__(self, expression):
+        self.expression = expression
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        self.expression.print(spacer, level + 1)

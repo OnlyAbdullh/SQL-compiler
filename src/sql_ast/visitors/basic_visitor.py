@@ -9,10 +9,6 @@ from ..ast_nodes.select_nodes import TopSpec, Star
 
 
 class BasicVisitor(SQLParserVisitor):
-    # Statement Block
-    def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
-        statements = [self.visit(statement) for statement in ctx.statement()]
-        return StatementBlock(statements)
 
     # Where
     def visitWhere_clause(self, ctx):
@@ -311,18 +307,33 @@ class BasicVisitor(SQLParserVisitor):
         return SingleValueNode(ctx.getText())
 
 
+    # Statement Block
+    def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
+        statements = [self.visit(statement) for statement in ctx.statement()]
+        return StatementBlock(statements)
+
+
+    def visitTable_type_definition(self, ctx:SQLParser.Table_type_definitionContext):
+        return TableTypeDefinition(self.visit(ctx.table_type_element_list()))
+    def visitTable_type_element_list(self, ctx:SQLParser.Table_type_element_listContext):
+        return ItemsList([self.visit(element) for element in ctx.table_type_element()])
 
 
 
+    def visitGo_statement(self, ctx:SQLParser.Go_statementContext):
+        if ctx.IDENTIFIER():
+            return GoStatement(ctx.IDENTIFIER().getText())
 
+        return GoStatement()
 
-
-
-
-
-
-
+    def visitPrint_clause(self, ctx:SQLParser.Print_clauseContext):
+        return PrintClause(self.visit(ctx.expression()))
 
 
     def visitLiteral(self, ctx: SQLParser.LiteralContext):
+
+
+
+
+
         return Literal(ctx.getText())

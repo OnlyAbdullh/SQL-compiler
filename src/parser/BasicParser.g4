@@ -258,8 +258,8 @@ user_name : IDENTIFIER  ;
 
 // TDOO : complete from here
 table_type_definition
-    :TABLE LPAREN table_type_element (COMMA table_type_element)* RPAREN;
-
+    :TABLE table_type_element_list;
+table_type_element_list:LPAREN table_type_element (COMMA table_type_element)* RPAREN;
 
 table_type_element
     : column_definition
