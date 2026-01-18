@@ -9,6 +9,7 @@ create_statement
     | create_index
     | create_view
     | create_user
+    | create_login
     ;
 
 create_table
@@ -104,6 +105,23 @@ default_language_value
     ;
 
 login_name: IDENTIFIER;
+
+create_login
+    : CREATE LOGIN login_name create_login_core SEMI?
+    ;
+
+create_login_core
+    : WITH PASSWORD EQ literal
+      (COMMA create_login_option)*
+    ;
+
+create_login_option
+    : DEFAULT_DATABASE EQ full_table_name
+    | DEFAULT_LANGUAGE EQ default_language_value
+    | CHECK_POLICY EQ (ON | OFF)
+    | CHECK_EXPIRATION EQ (ON | OFF)
+    | SID EQ sid_value
+    ;
 
 sid_value
     : literal
