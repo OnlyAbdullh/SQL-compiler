@@ -44,9 +44,14 @@ drop_index_option
     : MAXDOP EQ expression
     | ONLINE EQ (ON | OFF)
     | MOVE TO drop_move_target
+    | FILESTREAM_ON drop_filestream_target
     ;
 
 drop_move_target
+    : partition_target
+    | IDENTIFIER
+    ;
+drop_filestream_target
     : partition_target
     | IDENTIFIER
     ;

@@ -12,13 +12,29 @@ alter_statement
     ;
 
 alter_table
-    : ALTER TABLE full_table_name table_action_list SEMI? ;
+    : ALTER TABLE full_table_name alter_table_with_clause? table_action_list SEMI?
+    ;
+
+alter_table_with_clause
+    : WITH (CHECK | NOCHECK);
+
 table_action_list: table_action (COMMA table_action)*;
 table_action
     : table_alter_column
     | table_add
     | table_rename_column
-    | table_check_constraint    ;
+    | table_check_constraint
+    | table_drop_constraint  ;
+
+table_drop_constraint
+    : DROP CONSTRAINT constraint_name drop_constraint_with_clause?;
+
+constraint_name: IDENTIFIER   ;
+drop_constraint_with_clause
+    : WITH LPAREN drop_constraint_option (COMMA drop_constraint_option)* RPAREN;
+
+drop_constraint_option
+    : ONLINE EQ (ON | OFF) ;
 
 table_check_constraint
     : CHECK CONSTRAINT constraint_target

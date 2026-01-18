@@ -164,7 +164,7 @@ column_constraint_body:
       default_col_constraint
     | pk_constraint
     | unique_constraint
-    |single_word_constrain
+    | single_word_constrain
     | identity_col_constraint
     | col_foreign_key_constraint
     | check_constraint
@@ -180,13 +180,25 @@ single_word_constrain:
 identity_col_constraint: IDENTITY (LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN)?;
 check_constraint
     : CHECK LPAREN search_condition RPAREN ;
-pk_constraint: PRIMARY KEY (CLUSTERED | NONCLUSTERED)?; // clusterd by default
-unique_constraint: UNIQUE (CLUSTERED | NONCLUSTERED)?; // non clusterd by default
+pk_constraint
+    : PRIMARY KEY (CLUSTERED | NONCLUSTERED)?
+      LPAREN index_column (COMMA index_column)* RPAREN
+      index_with_clause?
+    ;
+
+unique_constraint
+    : UNIQUE (CLUSTERED | NONCLUSTERED)?
+      LPAREN index_column (COMMA index_column)* RPAREN
+      index_with_clause?
+    ;
 col_foreign_key_constraint: (FOREIGN KEY)? REFERENCES full_table_name column_list;
 
 
 
-default_col_constraint: DEFAULT default_value_expr;
+default_col_constraint
+    : DEFAULT default_value_expr with_values_clause?;
+
+with_values_clause: WITH VALUES;
 
 default_value_expr
     : literal
@@ -226,15 +238,12 @@ table_constraint
 
 // no override
 table_constraint_body
-    : pk_table_constraint
+    : pk_constraint
     | unique_table_constraint
     | fk_table_constraint
     | check_constraint
     | default_table_constraint
     ;
-
-pk_table_constraint
-    : pk_constraint column_list;
 
 
 unique_table_constraint:
