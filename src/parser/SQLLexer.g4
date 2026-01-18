@@ -342,6 +342,7 @@ BLOCKERS:'BLOCKERS';
 OPTIMIZE_FOR_SEQUENTIAL_KEY:'OPTIMIZE_FOR_SEQUENTIAL_KEY';
 COMPRESSION_DELAY:'COMPRESSION_DELAY';
 STATISTICS_INCREMENTAL:'STATISTICS_INCREMENTAL';
+MOVE:'MOVE';
 //! ╔══════════════════════════════════╗
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝

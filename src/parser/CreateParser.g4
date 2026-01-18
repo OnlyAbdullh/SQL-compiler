@@ -65,11 +65,6 @@ create_index
 
 index_on_clause : ON partition_target;
 
-partition_target
-    : IDENTIFIER LPAREN full_column_name RPAREN
-    | IDENTIFIER
-    | DEFAULT
-    ;
 
 index_clustering
     : CLUSTERED

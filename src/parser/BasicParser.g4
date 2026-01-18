@@ -329,7 +329,9 @@ index_common_option
     | RESUMABLE EQ (ON | OFF)
     | MAX_DURATION EQ expression (MINUTES)?
     ;
-partition_range
-    : NUMBER_LITERAL
-    | NUMBER_LITERAL TO NUMBER_LITERAL
+
+partition_target
+    : IDENTIFIER LPAREN full_column_name RPAREN
+    | IDENTIFIER
+    | DEFAULT
     ;

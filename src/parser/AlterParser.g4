@@ -150,6 +150,11 @@ rebuild_compression_kind
 rebuild_partitions_clause
     : ON PARTITIONS LPAREN partition_range (COMMA partition_range)* RPAREN;
 
+partition_range
+    : NUMBER_LITERAL
+    | NUMBER_LITERAL TO NUMBER_LITERAL
+    ;
+
 reorganize_option
     : LOB_COMPACTION EQ (ON | OFF)
     | COMPRESS_ALL_ROW_GROUPS EQ (ON | OFF)
