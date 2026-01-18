@@ -74,6 +74,9 @@ index_option
     | ALLOW_ROW_LOCKS EQ (ON | OFF)
     | ALLOW_PAGE_LOCKS EQ (ON | OFF)
     | DROP_EXISTING EQ (ON | OFF)
+    | DATA_COMPRESSION EQ (NONE | ROW | PAGE)
+    | XML_COMPRESSION EQ(ON | OFF)
+    | ONLINE EQ(ON | OFF)
     ;
 
 
