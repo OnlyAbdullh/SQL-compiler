@@ -26,7 +26,14 @@ table_action
     | table_drop_constraint_simple
     | table_drop
     | table_set_option
+    | table_change_tracking
     ;
+table_change_tracking
+    : (ENABLE | DISABLE) CHANGE_TRACKING change_tracking_with_clause?;
+
+change_tracking_with_clause
+    : WITH LPAREN TRACK_COLUMNS_UPDATED EQ (ON | OFF) RPAREN;
+
 table_set_option
     : SET LPAREN table_option (COMMA table_option)* RPAREN;
 table_option
@@ -49,8 +56,16 @@ alter_column_action
       encrypted_with_clause?
       nullability_clause? // todo : check if i can remove the ? if it has a defaulf value of null
       SPARSE?
+      alter_column_with_clause?
     | alter_column_option_action
     ;
+
+alter_column_with_clause
+    : WITH LPAREN alter_column_option (COMMA alter_column_option)* RPAREN;
+
+alter_column_option
+    : ONLINE EQ (ON | OFF) ;
+
 collate_clause
     : COLLATE full_table_name  ;
 

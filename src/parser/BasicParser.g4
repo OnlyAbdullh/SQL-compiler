@@ -73,13 +73,11 @@ nullability_clause
     ;
 
 datatype
-    : full_table_name
-    | single_word_data_type
+    : single_word_data_type
     | decimal_numeric_data_type
     | char_nchar_binary_data_type
     | varchar_nvarchar_varbinary_data_type
     | time_data_type
-
     ;
 
 single_word_data_type: INT
