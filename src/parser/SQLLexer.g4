@@ -306,6 +306,11 @@ OWNER:'OWNER';
 WRITE:'WRITE';
 PERSISTED:'PERSISTED';
 SPARSE:'SPARSE';
+DEFAULT_DATABASE:'DEFAULT_DATABASE';
+CHECK_POLICY:'CHECK_POLICY';
+CHECK_EXPIRATION:'CHECK_EXPIRATION';
+DOUBLE_COLON : '::';
+IMPERSONATE:'IMPERSONATE';
 //! ╔══════════════════════════════════╗
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝

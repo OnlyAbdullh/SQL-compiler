@@ -9,6 +9,8 @@ create_statement
     | create_index
     | create_view
     | create_user
+    | create_login
+    | grant_statement
     ;
 
 create_table
@@ -80,12 +82,22 @@ view_with_attributes
 
 
 create_user
-    : CREATE USER user_name create_user_core SEMI?;
+    : CREATE USER user_name create_user_core? SEMI?;
 
 create_user_core
     : (FOR | FROM)? LOGIN login_name with_user_options?
     | WITH PASSWORD EQ literal (COMMA create_user_option)*
     | WITHOUT LOGIN with_user_options?
+    | with_limited_user_options
+    ;
+
+limited_user_option
+    : DEFAULT_SCHEMA EQ full_table_name
+    | ALLOW_ENCRYPTED_VALUE_MODIFICATIONS EQ (ON | OFF)
+    ;
+
+with_limited_user_options
+    : WITH limited_user_option (COMMA limited_user_option)*
     ;
 
 with_user_options
@@ -105,10 +117,36 @@ default_language_value
 
 login_name: IDENTIFIER;
 
+create_login
+    : CREATE LOGIN login_name create_login_core SEMI?
+    ;
+
+create_login_core
+    : WITH PASSWORD EQ literal
+      (COMMA create_login_option)*
+    ;
+
+create_login_option
+    : DEFAULT_DATABASE EQ full_table_name
+    | DEFAULT_LANGUAGE EQ default_language_value
+    | CHECK_POLICY EQ (ON | OFF)
+    | CHECK_EXPIRATION EQ (ON | OFF)
+    | SID EQ sid_value
+    ;
+
 sid_value
     : literal
     | IDENTIFIER
     ;
+
+grant_statement
+    : GRANT IMPERSONATE ON grant_target TO full_table_name SEMI?
+    ;
+
+grant_target
+    : USER DOUBLE_COLON user_name;
+
+
 /*create_function
     : CREATE (OR ALTER)? FUNCTION function_name function_parameters
       RETURNS function_return_type
