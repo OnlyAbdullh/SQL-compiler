@@ -64,6 +64,7 @@ index_option
     | IGNORE_DUP_KEY EQ (ON | OFF)
     | ALLOW_ROW_LOCKS EQ (ON | OFF)
     | ALLOW_PAGE_LOCKS EQ (ON | OFF)
+    | DROP_EXISTING EQ (ON | OFF)
     ;
 
 
