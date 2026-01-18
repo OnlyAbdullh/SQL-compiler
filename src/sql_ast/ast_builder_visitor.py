@@ -10,9 +10,10 @@ from sql_ast.visitors.cursor_visitor import CursorVisitor
 from sql_ast.visitors.expression_visitor import ExpressionVisitor
 from sql_ast.visitors.select_visitor import SelectVisitor
 from sql_ast.visitors.truncate_visitor import TruncateVisitor
+from sql_ast.visitors.variable_visitor import VariableVisitor
 
 
-class ASTBuilderVisitor(ExpressionVisitor, BasicVisitor, SelectVisitor, CursorVisitor, TruncateVisitor, AlterVisitor):
+class ASTBuilderVisitor(ExpressionVisitor, BasicVisitor, SelectVisitor, CursorVisitor, TruncateVisitor, AlterVisitor , VariableVisitor):
     ###################################################################
     #             SQLParser Visit.
     ###################################################################
