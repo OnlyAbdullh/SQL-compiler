@@ -6,7 +6,7 @@ class SingleValueNode(ASTNode):
         self.value = value
 
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level, self.value)
+        print(spacer * level, self.value)
 
 
 class Variable(SingleValueNode):
@@ -156,11 +156,8 @@ class FunctionCall(ASTNode):
         self.self_print(spacer * level, full_name)
 
         if self.args:
+            print(spacer * (level + 1), "Arguments:")
             self.args.print(spacer, level + 1)
-
-
-class FunctionArg(ExpressionAlaisNode):
-    pass
 
 
 class DerivedTable(SingleExpressionNode):
@@ -279,3 +276,99 @@ class ParenLiteralMax(ASTNode):
             print(spacer * level, "MAX")
         else:
             self.value.print(spacer, level + 1)
+
+
+class ColumnDefinition(ASTNode):
+    def __init__(self, name, column_type, constraints):
+        self.name = name
+        self.column_type = column_type
+        self.constraints = constraints
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        self.name.print(spacer, level + 1)
+        self.column_type.print(spacer, level + 1)
+        self.constraints.print(spacer, level + 1)
+
+
+class ColumnAs(ExpressionAlaisNode):
+    pass
+
+
+class ComputedColumnDefinition(ASTNode):
+    def __init__(self, name, expression, persisted=False):
+        self.name = name
+        self.expression = expression
+        self.persisted = persisted
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        self.name.print(spacer, level + 1)
+        self.expression.print(spacer, level + 1)
+        if self.persisted:
+            print(spacer * (level + 1), "PERSISTED")
+
+
+class ColumnConstraint(ASTNode):
+    def __init__(self,body , prefix = None):
+        self.body = body
+        self.prefix = prefix
+
+    def print(self, spacer="  ", level=0):
+        if self.prefix:
+            print(spacer * level, self.prefix)
+        self.body.print(spacer, level + 1)
+
+
+class IdentityConstraint(ASTNode):
+    def __init__(self, seed = 1, increment = 1):
+        self.seed = seed
+        self.increment = increment
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        print(spacer * (level + 1), f"SEED : {self.seed}")
+        print(spacer * (level + 1), f"INCREMENT : {self.increment}")
+
+
+class CheckConstraint(ASTNode):
+    def __init__(self, condition):
+        self.condition = condition
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        self.condition.print(spacer, level + 1)
+
+class PrimaryKeyConstraint(ASTNode):
+    def __init__(self, clustered=True):
+        self.clustered = clustered
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * level, f"PRIMARY KEY: {'CLUSTERED' if self.clustered else 'NONCLUSTERED'}")
+
+
+class UniqueConstraint(ASTNode):
+    def __init__(self, clustered=True):
+        self.clustered = clustered
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * level, f"Unique : {'CLUSTERED' if self.clustered else 'NONCLUSTERED'}")
+
+class ColumnForeignKeyConstraint(ASTNode):
+    def __init__(self, referenced_table, referenced_column):
+        self.referenced_table = referenced_table
+        self.referenced_column = referenced_column
+
+    def print(self, spacer="  ", level=0):
+        print(spacer * (level + 1), "FOREIGN KEY REFERENCES :")
+        self.referenced_table.print(spacer, level + 2)
+        self.referenced_column.print(spacer, level + 2)
+
+class DefaultConstraint(ASTNode):
+    def __init__(self, default_value):
+        self.default_value = default_value
+
+    def print(self, spacer="  ", level=0):
+        self.self_print(spacer * level)
+        self.default_value.print(spacer, level + 1)
+

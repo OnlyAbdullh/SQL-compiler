@@ -212,5 +212,86 @@ class BasicVisitor(SQLParserVisitor):
         alias = self.visit(ctx.as_alias()) if ctx.as_alias() else None
         return ExpressionAlaisNode(expr, alias)
 
+    def visitDefault_column_definition(self, ctx:SQLParser.Default_column_definitionContext):
+        col_name = self.visit(ctx.full_column_name())
+        col_type = self.visit(ctx.column_type())
+        constraint_list = self.visit(ctx.column_constraint_list())
+        return ColumnDefinition(col_name, col_type, constraint_list)
+
+    def visitColumn_constraint_list(self, ctx:SQLParser.Column_constraint_listContext):
+        return ItemsList([self.visit(constraint) for constraint in ctx.column_constraint()])
+
+
+    def visitColumn_as(self, ctx:SQLParser.Column_asContext):
+        col_name = self.visit(ctx.full_column_name())
+        as_alias = self.visit(ctx.as_alias())
+        return ColumnAs(col_name, as_alias)
+
+
+    def visitComputed_column_definition(self, ctx:SQLParser.Computed_column_definitionContext):
+        col_name = self.visit(ctx.full_column_name())
+        expr = self.visit(ctx.expression())
+        persisted = ctx.PERSISTED() is not None
+        return ComputedColumnDefinition(col_name, expr, persisted)
+
+
+
+    def visitColumn_constraint(self, ctx:SQLParser.Column_constraintContext):
+        prefix  = ctx.IDENTIFIER() if ctx.IDENTIFIER() else None
+        body = self.visit(ctx.column_constraint_body())
+        return ColumnConstraint( body, prefix)
+
+    def visitSingle_word_constrain(self, ctx:SQLParser.Single_word_constrainContext):
+        return SingleValueNode(ctx.getText())
+
+    def visitIdentity_col_constraint(self, ctx:SQLParser.Identity_col_constraintContext):
+        if ctx.NUMBER_LITERAL() is None:
+            return IdentityConstraint()
+        n1 = ctx.NUMBER_LITERAL(0)
+        n2 = ctx.NUMBER_LITERAL(1)
+        return IdentityConstraint(n1 ,n2)
+
+
+
+    def visitCheck_col_constraint(self, ctx:SQLParser.Check_col_constraintContext):
+        return CheckConstraint(self.visit(ctx.search_condition()))
+
+    def visitPk_col_constraint(self, ctx:SQLParser.Pk_col_constraintContext):
+        return PrimaryKeyConstraint(ctx.NONCLUSTERED() is None)
+
+    def visitUnique_col_constraint(self, ctx:SQLParser.Unique_col_constraintContext):
+        return UniqueConstraint(ctx.CLUSTERED() is not None)
+
+    def visitCol_foreign_key_constraint(self, ctx:SQLParser.Col_foreign_key_constraintContext):
+        ref_table = self.visit(ctx.full_table_name())
+        ref_columns = self.visit(ctx.column_list())
+        return ColumnForeignKeyConstraint(ref_table, ref_columns)
+
+
+    def visitDefault_col_constraint(self, ctx:SQLParser.Default_constraintContext):
+        return DefaultConstraint(self.visit(ctx.default_value_expr()))
+
+    def visitDefault_value_expr(self, ctx:SQLParser.Default_value_exprContext):
+        if ctx.function_call():
+            return self.visit(ctx.function_call())
+        return self.visit(ctx.getChild(0))
+
+    def visitNiladic_function(self, ctx:SQLParser.Niladic_functionContext):
+        return SingleValueNode(ctx.getText())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def visitLiteral(self, ctx: SQLParser.LiteralContext):
         return Literal(ctx.getText())

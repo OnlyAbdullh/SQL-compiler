@@ -127,40 +127,72 @@ expression_alias_list: expression_alias (COMMA expression_alias)*;
 expression_alias: expression as_alias?;
 
 
+
+
+
+
+
+
+
+
+
+
+
 column_definition
-    : full_column_name column_type column_constraint*
+    : default_column_definition
     | computed_column_definition
-    | full_column_name as_alias
+    | column_as
     ;
 
+default_column_definition: full_column_name column_type column_constraint_list;
+column_constraint_list: column_constraint*;
+
+column_as : full_column_name as_alias;
 computed_column_definition
-    : full_column_name AS expression
-      PERSISTED?
+    : full_column_name AS expression PERSISTED?
     ;
+
+
+
+
+
+
 
 
 column_constraint
     : (CONSTRAINT IDENTIFIER)? column_constraint_body
     ;
-column_constraint_body
-    : DEFAULT default_value_expr
-    | PRIMARY KEY (CLUSTERED | NONCLUSTERED)?
-    | UNIQUE (CLUSTERED | NONCLUSTERED)?
-    | NOT NULL
-    | NULL
-    | IDENTITY LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN?
-    | IDENTITY
-    | ROWGUIDCOL
-    | REFERENCES full_table_name LPAREN full_column_name (COMMA full_column_name)* RPAREN
-    | FOREIGN KEY REFERENCES full_table_name LPAREN full_column_name (COMMA full_column_name)* RPAREN
-    | CHECK LPAREN search_condition RPAREN
+column_constraint_body:
+      default_col_constraint
+    | pk_col_constraint
+    | unique_col_constraint
+    |single_word_constrain
+    | identity_col_constraint
+    | col_foreign_key_constraint
+    | check_col_constraint
     ;
+single_word_constrain:
+     NOT NULL
+    | NULL
+    | ROWGUIDCOL
+    ;
+
+
+
+identity_col_constraint: IDENTITY (LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN)?;
+check_col_constraint: CHECK LPAREN search_condition RPAREN;
+pk_col_constraint: PRIMARY KEY (CLUSTERED | NONCLUSTERED)?; // clusterd by default
+unique_col_constraint: UNIQUE (CLUSTERED | NONCLUSTERED)?; // non clusterd by default
+col_foreign_key_constraint: (FOREIGN KEY)? REFERENCES full_table_name column_list;
+
+
+
+default_col_constraint: DEFAULT default_value_expr;
 
 default_value_expr
     : literal
     | niladic_function
-    | function_call
-    | LPAREN function_call RPAREN
+    | (function_call | LPAREN function_call RPAREN)
     ;
 
 niladic_function
