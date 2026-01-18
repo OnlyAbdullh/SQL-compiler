@@ -127,35 +127,18 @@ expression_alias: expression as_alias?;
 
 
 
-
-
-
-
-
-
-
-
-
 column_definition
     : default_column_definition
     | computed_column_definition
     | column_as
     ;
 
-default_column_definition: full_column_name column_type column_constraint_list;
 column_constraint_list: column_constraint*;
 
 column_as : full_column_name as_alias;
 computed_column_definition
     : full_column_name AS expression PERSISTED?
     ;
-
-
-
-
-
-
-
 
 column_constraint
     : (CONSTRAINT IDENTIFIER)? column_constraint_body
@@ -185,8 +168,6 @@ check_constraint
 
 col_foreign_key_constraint: (FOREIGN KEY)? REFERENCES full_table_name column_list;
 
-
-
 default_col_constraint
     : DEFAULT default_value_expr with_values_clause?;
 
@@ -203,10 +184,6 @@ niladic_function
     | SYSTEM_USER
     | CURRENT_USER
     ;
-
-
-
-
 
 
 table_constraint
@@ -329,4 +306,17 @@ partition_target
     : IDENTIFIER LPAREN full_column_name RPAREN
     | IDENTIFIER
     | DEFAULT
+    ;
+
+default_column_definition
+    : full_column_name column_type encrypted_with_clause? column_constraint_list
+    ;
+encrypted_with_clause
+    : ENCRYPTED WITH LPAREN encrypted_option (COMMA encrypted_option)* RPAREN
+    ;
+
+encrypted_option
+    : COLUMN_ENCRYPTION_KEY EQ full_column_name
+    | ENCRYPTION_TYPE EQ (DETERMINISTIC | RANDOMIZED)
+    | ALGORITHM EQ STRING_LITERAL
     ;
