@@ -270,3 +270,14 @@ class DataType(ASTNode):
         print(spacer * level,f"DataType:  {self.name}")
         if self.params:
             self.params.print(spacer, level + 1)
+
+class ParenLiteralMax(ASTNode):
+    def __init__(self, value, is_max=False):
+        self.value = value
+        self.is_max = is_max
+
+    def print(self, spacer="  ", level=0):
+        if self.is_max:
+            print(spacer * level, "MAX")
+        else:
+            self.value.print(spacer, level + 1)

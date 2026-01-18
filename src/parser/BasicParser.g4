@@ -99,7 +99,6 @@ single_word_data_type: INT
     | DATETIME;
 
 decimal_numeric_data_type:( DECIMAL|NUMERIC) literal_pair?;
-literal_pair : LPAREN literal (COMMA literal)? RPAREN;
 
 char_nchar_binary_data_type:(CHAR |NCHAR |BINARY) paren_literal?;
 
@@ -108,8 +107,12 @@ varchar_nvarchar_varbinary_data_type: (VARCHAR| NVARCHAR  |VARBINARY) paren_lite
 
 time_data_type: (TIME| DATETIME2 | DATETIMEOFFSET ) paren_literal?;
 
+
+literal_pair : LPAREN literal (COMMA literal)? RPAREN;
 paren_literal:LPAREN literal RPAREN;
 paren_literal_max: LPAREN (literal|MAX) RPAREN;
+
+
 
 function_call
     : (IDENTIFIER DOT)? (IDENTIFIER|MAX) LPAREN function_arguments? RPAREN

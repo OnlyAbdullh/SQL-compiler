@@ -8,7 +8,6 @@ from ..ast_nodes.basic_nodes import *
 from ..ast_nodes.select_nodes import TopSpec
 
 
-
 class BasicVisitor(SQLParserVisitor):
     # Statement Block
     def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
@@ -144,21 +143,46 @@ class BasicVisitor(SQLParserVisitor):
 
         # Literal
 
-
-    def visitColumn_type(self, ctx:SQLParser.Column_typeContext):
+    def visitColumn_type(self, ctx: SQLParser.Column_typeContext):
         data_type = self.visit(ctx.datatype())
         sparse = ctx.SPARSE() is not None
         null_clause = self.visit(ctx.nullability_clause())
         return ColumnType(data_type, sparse, null_clause)
 
-    def visitNullability_clause(self, ctx:SQLParser.Nullability_clauseContext):
+    def visitNullability_clause(self, ctx: SQLParser.Nullability_clauseContext):
         return NullClause(ctx.NOT() is not None)
 
     # no override for datatype
 
-    def visitSingle_word_data_type(self, ctx:SQLParser.Single_word_data_typeContext):
+    def visitSingle_word_data_type(self, ctx: SQLParser.Single_word_data_typeContext):
         return DataType(ctx.getText())
 
+    def visitDecimal_numeric_data_type(self, ctx: SQLParser.Decimal_numeric_data_typeContext):
+        literal_pair = self.visit(ctx.literal_pair()) if ctx.literal_pair() else None
+        name = ctx.getChild(0).getText()
+        return DataType(name, literal_pair)
+
+    def visitLiteral_pair(self, ctx: SQLParser.Literal_pairContext):
+        return ItemsList([self.visit(lt) for lt in ctx.literal()])
+
+    def visitChar_nchar_binary_data_type(self, ctx: SQLParser.Char_nchar_binary_data_typeContext):
+        name = ctx.getChild(0).getText()
+        literal = self.visit(ctx.paren_literal()) if ctx.paren_literal() else None
+        return DataType(name, literal)
+
+    def visitParen_literal(self, ctx: SQLParser.Paren_literalContext):
+        return self.visit(ctx.literal())
+
+    def visitVarchar_nvarchar_varbinary_data_type(self, ctx: SQLParser.Varchar_nvarchar_varbinary_data_typeContext):
+        name = ctx.getChild(0).getText()
+        literal = self.visit(ctx.paren_literal_max()) if ctx.paren_literal_max() else None
+        return DataType(name, literal)
+
+    def visitParen_literal_max(self, ctx: SQLParser.Paren_literal_maxContext):
+        if ctx.MAX():
+            return ParenLiteralMax(None, is_max=True)
+        else:
+            return ParenLiteralMax(self.visit(ctx.literal()), is_max=False)
 
 
 
@@ -169,23 +193,6 @@ class BasicVisitor(SQLParserVisitor):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def visitLiteral(self, ctx: SQLParser.LiteralContext):
-        return Literal(ctx.getText())
 
     def visitFunction_call(self, ctx: SQLParser.Function_callContext):
         schema = None
@@ -215,3 +222,12 @@ class BasicVisitor(SQLParserVisitor):
             args.append(FunctionArg(expr, alias))
 
         return args
+
+
+
+
+
+
+
+    def visitLiteral(self, ctx: SQLParser.LiteralContext):
+        return Literal(ctx.getText())
