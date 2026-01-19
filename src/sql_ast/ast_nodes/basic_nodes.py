@@ -11,7 +11,7 @@ class SingleValueNode(ASTNode):
 
 class UserVariable(SingleValueNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level, self.__class__.__name__ + ": " + self.value)
+        print(spacer * level+self.__class__.__name__ + ": " + self.value)
 
 
 class Variable(SingleValueNode):
@@ -253,6 +253,16 @@ class ArgumentList(ItemsList):
         for value in self.items:
             value.print(spacer, level + 1)
 
+class CursorUpdateColumnsList(ItemsList):
+    def print(self, spacer="  ", level=0):
+        print (spacer*level, "OF: ")
+        for column in self.items:
+            column.print(spacer, level + 1)
+
+class FetchIntoClauseList(ItemsList):
+    def print(self, spacer="  ", level=0):
+        for var in self.items:
+            var.print(spacer, level)
 
 class DefaultValue(ASTNode):
     def __init__(self, default_text):
