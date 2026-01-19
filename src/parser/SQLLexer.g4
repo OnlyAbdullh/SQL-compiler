@@ -355,6 +355,8 @@ AUTO:'AUTO';
 ENABLE:'ENABLE';
 CHANGE_TRACKING:'CHANGE_TRACKING';
 TRACK_COLUMNS_UPDATED:'TRACK_COLUMNS_UPDATED';
+COLUMN_SET:'COLUMN_SET';
+ALL_SPARSE_COLUMNS:'ALL_SPARSE_COLUMNS';
 //! ╔══════════════════════════════════╗
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝

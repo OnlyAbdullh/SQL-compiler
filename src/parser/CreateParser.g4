@@ -29,7 +29,10 @@ create_table_element
     : column_definition
     | table_constraint
     | table_index
+    | column_set_definition
     ;
+column_set_definition
+    : IDENTIFIER XML COLUMN_SET FOR ALL_SPARSE_COLUMNS;
 table_index
     : INDEX index_name table_index_body;
 
@@ -184,6 +187,7 @@ table_with_clause: WITH LPAREN table_option (COMMA table_option)* RPAREN;
 table_option
     : DATA_COMPRESSION EQ data_compression_kind table_partitions_clause?
     | LOCK_ESCALATION EQ lock_escalation_value
+    | XML_COMPRESSION EQ (ON | OFF)
     ;
 
 data_compression_kind

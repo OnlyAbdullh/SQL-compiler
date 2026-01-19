@@ -92,7 +92,8 @@ single_word_data_type: INT
     | TEXT
     | NTEXT
     | DATE
-    | DATETIME;
+    | DATETIME
+    | XML;
 
 decimal_numeric_data_type:( DECIMAL|NUMERIC) literal_pair?;
 
