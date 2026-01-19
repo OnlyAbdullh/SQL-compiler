@@ -63,8 +63,6 @@ alter_column_action
 alter_column_with_clause
     : WITH LPAREN alter_column_option (COMMA alter_column_option)* RPAREN;
 
-alter_column_option
-    : ONLINE EQ (ON | OFF) ;
 
 collate_clause
     : COLLATE full_table_name  ;
@@ -79,7 +77,7 @@ alter_column_option
     | ROWGUIDCOL
     | PERSISTED
     | NOT FOR REPLICATION
-    ;
+    | ONLINE EQ (ON | OFF) ;
 
 table_add
     : ADD table_add_item (COMMA table_add_item)*;
