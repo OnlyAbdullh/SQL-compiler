@@ -9,6 +9,7 @@ from sql_ast.visitors.basic_visitor import BasicVisitor
 from sql_ast.visitors.control_flow_visitor import ControlFlowVisitor
 from sql_ast.visitors.cursor_visitor import CursorVisitor
 from sql_ast.visitors.expression_visitor import ExpressionVisitor
+from sql_ast.visitors.output_visitor import OutputVisitor
 from sql_ast.visitors.select_visitor import SelectVisitor
 from sql_ast.visitors.transact_visitor import TransactVisitor
 from sql_ast.visitors.truncate_visitor import TruncateVisitor
@@ -16,7 +17,7 @@ from sql_ast.visitors.variable_visitor import VariableVisitor
 
 
 class ASTBuilderVisitor(ExpressionVisitor, BasicVisitor, SelectVisitor, CursorVisitor, TruncateVisitor, AlterVisitor,
-                        VariableVisitor, TransactVisitor, ControlFlowVisitor):
+                        VariableVisitor, TransactVisitor, ControlFlowVisitor, OutputVisitor):
     ###################################################################
     #             SQLParser Visit.
     ###################################################################
