@@ -1,4 +1,46 @@
+DELETE FROM dbo.TableA;
 
+DELETE dbo.TableA;
+
+DELETE TOP (5) FROM dbo.TableA;
+
+DELETE FROM dbo.TableA
+OUTPUT deleted.id;
+
+DELETE FROM dbo.TableA
+WHERE col1 = 10;
+
+DELETE a
+FROM dbo.TableA a
+JOIN dbo.TableB b ON a.id = b.id
+WHERE b.flag = 1;
+
+DELETE a
+FROM dbo.TableA AS a;
+
+DELETE FROM @myTable;
+
+WITH cte AS (
+    SELECT id FROM dbo.TableA WHERE flag = 1
+)
+DELETE FROM dbo.TableA
+WHERE id IN (SELECT id FROM cte);
+
+DELETE FROM dbo.TableA
+OUTPUT deleted.id, deleted.col1
+WHERE col1 > 100;
+
+DELETE dbo.TableA
+WHERE col2 IS NULL;
+
+WITH cte AS (
+    SELECT id FROM dbo.TableB
+)
+DELETE TOP (3) a
+OUTPUT deleted.id
+FROM dbo.TableA a
+JOIN cte ON a.id = cte.id
+WHERE a.status = 'X';
 
 DELETE FROM Customers;
 DELETE Customers WHERE Id = 10;
@@ -57,3 +99,4 @@ WHERE (bt.Flag IS NULL OR bt.Flag IS NOT NULL)
 DELETE Sales.ShoppingCartItem
 OUTPUT DELETED.*
 WHERE ShoppingCartID = 20621;
+
