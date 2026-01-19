@@ -17,9 +17,7 @@ from sql_ast.visitors.variable_visitor import VariableVisitor
 
 
 class ASTBuilderVisitor(ExpressionVisitor, BasicVisitor, SelectVisitor, CursorVisitor, TruncateVisitor, AlterVisitor,
-                        VariableVisitor):
-class ASTBuilderVisitor(ExpressionVisitor, BasicVisitor, SelectVisitor, CursorVisitor, TruncateVisitor, AlterVisitor , VariableVisitor, InsertVisitor,  TransactVisitor, ControlFlowVisitor):
-    ###################################################################
+                        VariableVisitor):    ###################################################################
     #             SQLParser Visit.
     ###################################################################
 
