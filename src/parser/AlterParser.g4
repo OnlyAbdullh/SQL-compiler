@@ -2,7 +2,7 @@ parser grammar AlterParser;
 
 options { tokenVocab = SQLLexer; }
 
-import BasicParser;
+import BasicParser, CreateParser;
 alter_statement
     : alter_table
     | alter_index
@@ -301,28 +301,26 @@ alter_view
       SEMI?
     ;
 
-view_attribute_clause: WITH view_attribute_list;
+view_attribute_clause: WITH view_attribute (COMMA view_attribute)*;
 
-view_attribute_list
-    : view_attribute (COMMA view_attribute)* ;
 
 alter_user
-    : ALTER USER user_name WITH user_option (COMMA user_option)* SEMI?;
-
+    : ALTER USER user_name WITH user_option_list SEMI?;
+user_option_list:
+ user_option (COMMA user_option)*;
 user_option
-    : IDENTIFIER EQ IDENTIFIER
-    | DEFAULT_SCHEMA EQ (IDENTIFIER | NULL)
-    | LOGIN EQ IDENTIFIER
-    | PASSWORD EQ literal (OLD_PASSWORD EQ literal)?
-    | DEFAULT_LANGUAGE EQ (NONE | literal | IDENTIFIER)
-    | ALLOW_ENCRYPTED_VALUE_MODIFICATIONS EQ (ON | OFF);
+    : id_eq_id_user_option
+    |default_schema_eq_user_option
+    |login_eq_id_user_option
+    |password_eq_user_option
+    |default_language_eq_user_option
+    |allow_encrypted_value_modifications_user_option ;
 
+id_eq_id_user_option:IDENTIFIER EQ IDENTIFIER ;
+default_schema_eq_user_option:DEFAULT_SCHEMA EQ (IDENTIFIER | NULL);
+login_eq_id_user_option:LOGIN EQ IDENTIFIER;
+password_eq_user_option:PASSWORD EQ literal (OLD_PASSWORD EQ literal)?;
+default_language_eq_user_option:DEFAULT_LANGUAGE EQ default_language_value;
+allow_encrypted_value_modifications_user_option:ALLOW_ENCRYPTED_VALUE_MODIFICATIONS EQ (ON | OFF);
 
-
-// ONLYONE WORK PART
-/*alter_function
-    : ALTER FUNCTION function_name function_parameters? returns_clause AS? function_body SEMI?;
-
-returns_clause
-    : RETURNS function_return_type SEMI;*/
 
