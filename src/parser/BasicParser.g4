@@ -150,7 +150,15 @@ column_constraint_body
     | identity_col_constraint
     | col_foreign_key_constraint
     | check_constraint
+    | column_index_constraint
     ;
+column_index_constraint
+    : INDEX index_name
+      index_clustering?
+      index_with_clause?
+      index_on_clause?
+    ;
+
 single_word_constrain:
      NOT NULL
     | NULL
