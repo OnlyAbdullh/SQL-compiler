@@ -92,7 +92,8 @@ single_word_data_type: INT
     | TEXT
     | NTEXT
     | DATE
-    | DATETIME;
+    | DATETIME
+    | XML;
 
 decimal_numeric_data_type:( DECIMAL|NUMERIC) literal_pair?;
 
@@ -149,7 +150,15 @@ column_constraint_body
     | identity_col_constraint
     | col_foreign_key_constraint
     | check_constraint
+    | column_index_constraint
     ;
+column_index_constraint
+    : INDEX index_name
+      index_clustering?
+      index_with_clause?
+      index_on_clause?
+    ;
+
 single_word_constrain:
      NOT NULL
     | NULL
@@ -157,7 +166,10 @@ single_word_constrain:
     ;
 
 
-pk_col_constraint: PRIMARY KEY; // clusterd by default
+pk_col_constraint
+    : (CONSTRAINT IDENTIFIER)? PRIMARY KEY (CLUSTERED | NONCLUSTERED)?
+      index_column_list?
+    ;
 unique_col_constraint: UNIQUE ;
 
 identity_col_constraint: IDENTITY (LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN)?;
@@ -276,17 +288,6 @@ view_attribute
     ;
 
 view_check_option : WITH CHECK OPTION ;
-/*function_body
-    : BEGIN statement* RETURN expression END
-    | RETURN select_statement
-    | RETURN LPAREN select_statement RPAREN
-    ;
-
-function_return_type
-    : return_data_type
-    | USER_VARIABLE  table_type_definition
-    ;*/
-
 index_common_option
     : PAD_INDEX EQ (ON | OFF)
     | FILLFACTOR EQ expression

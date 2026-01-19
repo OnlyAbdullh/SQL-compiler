@@ -14,7 +14,7 @@ create_statement
     ;
 
 create_table
-    : CREATE TABLE full_table_name create_table_body table_on_clause? SEMI?;
+    : CREATE TABLE full_table_name create_table_body table_on_clause? table_with_clause?   SEMI?;
 
 table_on_clause
     : ON partition_target;
@@ -29,7 +29,10 @@ create_table_element
     : column_definition
     | table_constraint
     | table_index
+    | column_set_definition
     ;
+column_set_definition
+    : IDENTIFIER XML COLUMN_SET FOR ALL_SPARSE_COLUMNS;
 table_index
     : INDEX index_name table_index_body;
 
@@ -179,6 +182,24 @@ grant_statement
 grant_target
     : USER DOUBLE_COLON user_name;
 
+table_with_clause: WITH LPAREN table_option (COMMA table_option)* RPAREN;
+
+table_option
+    : DATA_COMPRESSION EQ data_compression_kind table_partitions_clause?
+    | LOCK_ESCALATION EQ lock_escalation_value
+    | XML_COMPRESSION EQ (ON | OFF)
+    ;
+
+data_compression_kind
+    : NONE
+    | ROW
+    | PAGE
+    | COLUMNSTORE
+    | COLUMNSTORE_ARCHIVE
+    ;
+
+table_partitions_clause
+    : ON PARTITIONS LPAREN partition_number_expression (COMMA partition_number_expression)* RPAREN;
 
 /*create_function
     : CREATE (OR ALTER)? FUNCTION function_name function_parameters
