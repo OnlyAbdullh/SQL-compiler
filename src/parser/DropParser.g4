@@ -13,6 +13,7 @@ drop_object
     | drop_view
     | drop_user
     | drop_index
+    | drop_function
     ;
 
 drop_table
@@ -56,5 +57,6 @@ drop_filestream_target
     | IDENTIFIER
     ;
 
+drop_function: FUNCTION if_exists? drop_function_name_list;
 
-
+drop_function_name_list: function_name (COMMA function_name)*;
