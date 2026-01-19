@@ -14,4 +14,6 @@ common_table_expression_list: common_table_expression (COMMA common_table_expres
 
 common_table_expression: IDENTIFIER column_list? AS LPAREN cte_query_definition_list RPAREN;
 
-cte_query_definition_list: select_statement (set_operators select_statement)*;
+cte_query_definition_list: select_statement cte_set_operators_select_statement;
+
+cte_set_operators_select_statement: (set_operators select_statement)*;
