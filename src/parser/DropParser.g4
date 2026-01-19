@@ -42,7 +42,7 @@ drop_index_with_clause
     : WITH LPAREN drop_index_option (COMMA drop_index_option)* RPAREN;
 
 drop_index_option
-    : MAXDOP EQ expression
+    : max_dop_expression_option
     | ONLINE EQ (ON | OFF)
     | MOVE TO drop_move_target
     | FILESTREAM_ON drop_filestream_target

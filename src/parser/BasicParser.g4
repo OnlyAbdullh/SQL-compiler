@@ -150,15 +150,7 @@ column_constraint_body
     | identity_col_constraint
     | col_foreign_key_constraint
     | check_constraint
-    | column_index_constraint
     ;
-column_index_constraint
-    : INDEX index_name
-      index_clustering?
-      index_with_clause?
-      index_on_clause?
-    ;
-
 single_word_constrain:
      NOT NULL
     | NULL
@@ -166,10 +158,7 @@ single_word_constrain:
     ;
 
 
-pk_col_constraint
-    : (CONSTRAINT IDENTIFIER)? PRIMARY KEY (CLUSTERED | NONCLUSTERED)?
-      index_column_list?
-    ;
+pk_col_constraint: PRIMARY KEY; // clusterd by default
 unique_col_constraint: UNIQUE ;
 
 identity_col_constraint: IDENTITY (LPAREN NUMBER_LITERAL COMMA NUMBER_LITERAL RPAREN)?;
@@ -288,6 +277,24 @@ view_attribute
     ;
 
 view_check_option : WITH CHECK OPTION ;
+/*function_body
+    : BEGIN statement* RETURN expression END
+    | RETURN select_statement
+    | RETURN LPAREN select_statement RPAREN
+    ;
+
+function_return_type
+    : return_data_type
+    | USER_VARIABLE  table_type_definition
+    ;*/
+// These Are Implemented in Alter visitor
+resumable_option:RESUMABLE EQ (ON | OFF);
+
+max_dop_expression_option : MAXDOP EQ expression;
+mx_duration_expr_option :MAX_DURATION EQ expression (MINUTES)?;
+online_option_eq_online_option: ONLINE EQ online_option;
+
+// End of Alter visitor
 index_common_option
     : PAD_INDEX EQ (ON | OFF)
     | FILLFACTOR EQ expression
@@ -318,15 +325,4 @@ encrypted_option
     : COLUMN_ENCRYPTION_KEY EQ full_column_name
     | ENCRYPTION_TYPE EQ (DETERMINISTIC | RANDOMIZED)
     | ALGORITHM EQ STRING_LITERAL
-    ;
-
-function_body
-    : BEGIN statement* RETURN expression END
-    | RETURN select_statement
-    | RETURN LPAREN select_statement RPAREN
-    ;
-
-function_return_type
-    : return_data_type
-    | USER_VARIABLE  table_type_definition
     ;
