@@ -277,16 +277,7 @@ view_attribute
     ;
 
 view_check_option : WITH CHECK OPTION ;
-/*function_body
-    : BEGIN statement* RETURN expression END
-    | RETURN select_statement
-    | RETURN LPAREN select_statement RPAREN
-    ;
 
-function_return_type
-    : return_data_type
-    | USER_VARIABLE  table_type_definition
-    ;*/
 // These Are Implemented in Alter visitor
 resumable_option:RESUMABLE EQ (ON | OFF);
 
@@ -325,4 +316,14 @@ encrypted_option
     : COLUMN_ENCRYPTION_KEY EQ full_column_name
     | ENCRYPTION_TYPE EQ (DETERMINISTIC | RANDOMIZED)
     | ALGORITHM EQ STRING_LITERAL
+    ;
+function_body
+    : BEGIN statement* RETURN expression END
+    | RETURN select_statement
+    | RETURN LPAREN select_statement RPAREN
+    ;
+
+function_return_type
+    : return_data_type
+    | USER_VARIABLE  table_type_definition
     ;
