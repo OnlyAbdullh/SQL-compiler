@@ -56,7 +56,8 @@ alter_column_action
     | alter_column_option_action
     ;
 
-alter_columnt_type: column_type
+alter_columnt_type:
+        column_type
       collate_clause?
       encrypted_with_clause?
       nullability_clause
@@ -80,7 +81,7 @@ alter_column_option
     | ROWGUIDCOL
     | PERSISTED
     | NOT FOR REPLICATION
-    | ONLINE EQ (ON | OFF) ;
+    | online_eq_online_option ;
 
 
 table_add
@@ -112,7 +113,7 @@ constraint_name: IDENTIFIER;
 drop_constraint_with_clause
     : WITH LPAREN drop_constraint_option_list RPAREN;
 drop_constraint_option_list: drop_constraint_option (COMMA drop_constraint_option)*;
-drop_constraint_option : ONLINE EQ (ON | OFF)  ;
+drop_constraint_option : online_eq_online_option;
 
 table_drop : DROP drop_spec_list? ;
 
@@ -245,7 +246,7 @@ single_partition_rebuild_index_option
     | mx_duration_expr_option
     | data_compression_option
     | xml_compression_option
-    | online_option_eq_online_option
+    | online_eq_online_option
     ;
 
 

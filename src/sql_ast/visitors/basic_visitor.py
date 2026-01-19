@@ -143,7 +143,7 @@ class BasicVisitor(SQLParserVisitor):
         return ColumnType(data_type, sparse, null_clause)
 
     def visitNullability_clause(self, ctx: SQLParser.Nullability_clauseContext):
-        return NullClause(ctx.NOT() is not None)
+        return NullClause(ctx.NOT() is None)
 
     # no override for datatype
 

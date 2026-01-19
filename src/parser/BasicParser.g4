@@ -68,8 +68,9 @@ column_type
     : datatype SPARSE? nullability_clause;
 
 nullability_clause
-    : NULL?
-    | NOT NULL
+    :NOT NULL
+    |
+    NULL?
     ;
 
 datatype
@@ -102,6 +103,8 @@ char_nchar_binary_data_type:(CHAR |NCHAR |BINARY) paren_literal?;
 
 varchar_nvarchar_varbinary_data_type: (VARCHAR| NVARCHAR  |VARBINARY) paren_literal_max?;
 
+
+// TODO : Impelement This
 time_data_type: (TIME| DATETIME2 | DATETIMEOFFSET ) paren_literal?;
 
 
@@ -283,7 +286,7 @@ resumable_option:RESUMABLE EQ (ON | OFF);
 
 max_dop_expression_option : MAXDOP EQ expression;
 mx_duration_expr_option :MAX_DURATION EQ expression (MINUTES)?;
-online_option_eq_online_option: ONLINE EQ online_option;
+online_eq_online_option: ONLINE EQ online_option;
 
 // End of Alter visitor
 index_common_option
@@ -306,7 +309,7 @@ partition_target
     ;
 
 default_column_definition
-    : full_column_name column_type encrypted_with_clause? column_constraint_list
+    : COLUMN? full_column_name column_type encrypted_with_clause? column_constraint_list
     ;
 encrypted_with_clause
     : ENCRYPTED WITH LPAREN encrypted_option (COMMA encrypted_option)* RPAREN
