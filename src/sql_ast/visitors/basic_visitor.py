@@ -87,6 +87,8 @@ class BasicVisitor(SQLParserVisitor):
         return TableSourceList([self.visit(source) for source in ctx.table_source()])
 
     def visitTable_source(self, ctx: SQLParser.Table_sourceContext):
+        if ctx.function_call():
+            return self.visit(ctx.function_call())
         src_item = self.visit(ctx.table_source_item())
         joins = [self.visit(join) for join in ctx.join_clause()]
         return TableSource(src_item, joins)
