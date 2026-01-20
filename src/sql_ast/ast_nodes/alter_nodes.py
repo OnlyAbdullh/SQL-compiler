@@ -5,9 +5,9 @@ from .basic_nodes import SingleValueNode, SingleExpressionNode
 
 
 class AlterTableStatement(ASTNode):
-    def __init__(self, table, action, alter_table=None):
+    def __init__(self, table, actions, alter_table=None):
         self.table = table
-        self.action = action
+        self.action = actions
         self.alter_table = alter_table
 
     def print(self, spacer="  ", level=0):
@@ -15,7 +15,7 @@ class AlterTableStatement(ASTNode):
         self.table.print(spacer, level + 1)
         if self.alter_table:
             self.alter_table.print(spacer, level + 1)
-        print(spacer * level + "Action : ")
+        print(spacer * level + "Actions : ")
         self.action.print(spacer, level + 1)
 
 
@@ -41,18 +41,6 @@ class TableChangeTracking(ASTNode):
             self.change_with.print(spacer, level + 2)
 
 
-class OptionOnOff(ASTNode):
-    def __init__(self, on):
-        self.on = on
-
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + f"Option {"ON" if self.on else "OFF"}")
-
-
-class ChangeTrackingWithClause(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        # TODO : FORMAT
-        print(spacer * level + f"WITH TRACK COLUMNS UPDATED : {"ON" if self.on else "OFF"}")
 
 
 class SetTableOption(ASTNode):
@@ -227,29 +215,6 @@ class SetIndexOptionClause(ASTNode):
         self.index_option_list.print(spacer, level + 1)
 
 
-class AllowRowLocks(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Allow Row Locks: " + ("ON" if self.on else "OFF"))
-
-
-class AllowPageLocks(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Allow Page Locks: " + ("ON" if self.on else "OFF"))
-
-
-class OptimizeForSequentialKey(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Optimize For Sequential Key: " + ("ON" if self.on else "OFF"))
-
-
-class IgnoreDupKey(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Ignore Duplicated Key: " + ("ON" if self.on else "OFF"))
-
-
-class StatisticsNoRecompute(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Statistics No Recompute : " + ("ON" if self.on else "OFF"))
 
 
 class ComperssionDelayOption(ASTNode):
@@ -257,17 +222,18 @@ class ComperssionDelayOption(ASTNode):
         self.delay_value = delay_value
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level, "Compression Delay :  ")
+        print(spacer * level + "Compression Delay :  ")
         self.delay_value.print(spacer, level + 1)
 
 
 class RebuildClause(ASTNode):
-    def __init__(self, body):
+    def __init__(self, body = None):
         self.body = body
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level, "Rebuild Clause : ")
-        self.body.print(spacer, level + 1)
+        print(spacer * level + "Rebuild Clause  ")
+        if self.body:
+            self.body.print(spacer, level + 1)
 
 
 class RebuildBody(ASTNode):
@@ -276,7 +242,8 @@ class RebuildBody(ASTNode):
         self.rebuild_options = rebuild_options
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "Rebuild Body:")
+        if self.par_eq or self.rebuild_options:
+            print(spacer * level + "Rebuild Body:")
         if self.par_eq:
             self.par_eq.print(spacer, level + 1)
         if self.rebuild_options:
@@ -339,10 +306,6 @@ class ResumeWithOptions(SingleExpressionNode):
         self.expression.print(spacer, level + 1)
 
 
-class XmlCompressionOption(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "XML Compression Option: " + ("ON" if self.on else "OFF"))
-
 
 class XmlCompressionOptionWithRebuild(ASTNode):
     def __init__(self, xml_compression_option, rebuild_clause):
@@ -355,20 +318,6 @@ class XmlCompressionOptionWithRebuild(ASTNode):
         if self.rebuild_clause:
             self.rebuild_clause.print(spacer, level + 1)
 
-
-class StatisticsIncrementalOption(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Statistics Incremental Option: " + ("ON" if self.on else "OFF"))
-
-
-class SortInTempDBOption(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Sort In TempDB Option: " + ("ON" if self.on else "OFF"))
-
-
-class ResumableOption(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Resumable Option: " + ("ON" if self.on else "OFF"))
 
 
 class MaxDopExpressionOption(SingleExpressionNode):
@@ -386,16 +335,6 @@ class OnPartitionsClause(SingleExpressionNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "On Partitions: ")
         self.expression.print(spacer, level + 1)
-
-
-class LobCompactionOption(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Lob Compaction Option: " + ("ON" if self.on else "OFF"))
-
-
-class CompressAllRowGroupsOption(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Compress All Row Groups Option: " + ("ON" if self.on else "OFF"))
 
 
 class OnlineOption(ASTNode):
@@ -510,7 +449,3 @@ class DefaultLanguageOption(ASTNode):
 
     def print(self, spacer="  ", level=0):
         print(spacer * level + f"DEFAULT_LANGUAGE = {self.language} ")
-
-class AllowEncryptedValueModification(OptionOnOff):
-    def print(self, spacer="  ", level=0):
-        print(spacer * level + "Allow Encrypted Value Modification : " + ("ON" if self.on else "OFF"))

@@ -1,7 +1,7 @@
 from generated.SQLParser import SQLParser
 from generated.SQLParserVisitor import SQLParserVisitor
 from ..ast_nodes.alter_nodes import *
-from ..ast_nodes.basic_nodes import ItemsList, SingleValueNode, Range, Literal
+from ..ast_nodes.basic_nodes import *
 
 
 # from ..ast_nodes.truncate_nodes import *
@@ -11,8 +11,8 @@ class AlterVisitor(SQLParserVisitor):
     def visitAlter_table(self, ctx: SQLParser.Alter_tableContext):
         table = self.visit(ctx.full_table_name())
         alter_table = self.visit(ctx.alter_table_with_clause()) if ctx.alter_table_with_clause() else None
-        action = self.visit(ctx.table_action())
-        return AlterTableStatement(table, action, alter_table)
+        actions = ItemsList([self.visit(itm) for itm in ctx.table_action()])
+        return AlterTableStatement(table, actions, alter_table)
 
     def visitAlter_table_with_clause(self, ctx: SQLParser.Alter_table_with_clauseContext):
         return AlterTableWithClause(check=ctx.CHECK() is not None)
@@ -41,7 +41,7 @@ class AlterVisitor(SQLParserVisitor):
         return AlterTableColumn(col, action)
 
     def visitAlter_columnt_type(self, ctx: SQLParser.Alter_columnt_typeContext):
-        col_type = self.visit(ctx.cJolumn_type())
+        col_type = self.visit(ctx.column_type())
         collate = self.visit(ctx.collate_clause()) if ctx.collate_clause() else None
         encrypted_with = self.visit(ctx.encrypted_with_clause()) if ctx.encrypted_with_clause() else None
         nullable = self.visit(ctx.nullability_clause())
@@ -172,7 +172,7 @@ class AlterVisitor(SQLParserVisitor):
     #
     # ################################
     def visitRebuild_clause(self, ctx: SQLParser.Rebuild_clauseContext):
-        return RebuildClause(body=self.visit(ctx.rebuild_body()))
+        return RebuildClause(body=self.visit(ctx.rebuild_body()) if ctx.rebuild_body() else None)
 
     #
     def visitRebuild_body1(self, ctx: SQLParser.Rebuild_body1Context):
@@ -271,52 +271,65 @@ class AlterVisitor(SQLParserVisitor):
     def visitOnline_eq_online_option(self, ctx: SQLParser.Online_eq_online_optionContext):
         return OnlineOption(ctx.ON() is not None, self.visit(
             ctx.low_priority_lock_wait_clause()) if ctx.low_priority_lock_wait_clause() else None)
+
     #
     def visitLow_priority_lock_wait_clause(self, ctx: SQLParser.Low_priority_lock_wait_clauseContext):
         return self.visit(ctx.low_priority_lock_wait())
+
     #
-    def visitLow_priority_lock_wait(self, ctx:SQLParser.Low_priority_lock_waitContext):
+    def visitLow_priority_lock_wait(self, ctx: SQLParser.Low_priority_lock_waitContext):
         mx_dur_mins = self.visit(ctx.mx_duration_expr_option())
         abort_after_wait = ctx.getChild(6).getText()
         return LowPriorityLockWait(mx_dur_mins, abort_after_wait)
+
     #
     # ###################################
-    def visitAlter_view(self, ctx:SQLParser.Alter_viewContext):
+    def visitAlter_view(self, ctx: SQLParser.Alter_viewContext):
         table = self.visit(ctx.full_table_name())
         col_list = self.visit(ctx.column_list()) if ctx.column_list() else None
         attribute_clause = self.visit(ctx.view_attribute_clause()) if ctx.view_attribute_clause() else None
         select_st = self.visit(ctx.select_statement())
         check_option = self.visit(ctx.view_check_option()) if ctx.view_check_option() else None
-        return AlterViewStatement(table , select_st,col_list , attribute_clause  , check_option)
+        return AlterViewStatement(table, select_st, col_list, attribute_clause, check_option)
+
     #
-    def visitView_attribute_clause(self, ctx:SQLParser.View_attribute_clauseContext):
+    def visitView_attribute_clause(self, ctx: SQLParser.View_attribute_clauseContext):
         return WithViewAttributes(ItemsList([self.visit(attr) for attr in ctx.view_attribute()]))
+
     #
     #
-    def visitAlter_user(self, ctx:SQLParser.Alter_userContext):
+    def visitAlter_user(self, ctx: SQLParser.Alter_userContext):
         return AlterUserStatement(self.visit(ctx.user_name()), self.visit(ctx.user_option_list()))
+
     #
-    def visitUser_name(self, ctx:SQLParser.User_nameContext):
+    def visitUser_name(self, ctx: SQLParser.User_nameContext):
         return UserNameNode(ctx.getText())
 
-    def visitUser_option_list(self, ctx:SQLParser.User_option_listContext):
+    def visitUser_option_list(self, ctx: SQLParser.User_option_listContext):
         return WithUserOptions(ItemsList([self.visit(option) for option in ctx.user_option()]))
+
     #
-    def visitId_eq_id_user_option(self, ctx:SQLParser.Id_eq_id_user_optionContext):
-        return IdentifierEqualIdentifierOption(ctx.IDENTIFIER(0).getText() , ctx.IDENTIFIER(1).getText())
+    def visitId_eq_id_user_option(self, ctx: SQLParser.Id_eq_id_user_optionContext):
+        return IdentifierEqualIdentifierOption(ctx.IDENTIFIER(0).getText(), ctx.IDENTIFIER(1).getText())
+
     #
-    def visitDefault_schema_eq_user_option(self, ctx:SQLParser.Default_schema_eq_user_optionContext):
+    def visitDefault_schema_eq_user_option(self, ctx: SQLParser.Default_schema_eq_user_optionContext):
         return DefaultSchemaEqualOption(ctx.getChild(2).getText())
+
     #
     #
-    def visitLogin_eq_id_user_option(self, ctx:SQLParser.Login_eq_id_user_optionContext):
+    def visitLogin_eq_id_user_option(self, ctx: SQLParser.Login_eq_id_user_optionContext):
         return LoginOption(ctx.getChild(2).getText())
+
     #
-    def visitPassword_eq_user_option(self, ctx:SQLParser.Password_eq_user_optionContext):
-        return PasswordAndOldPasswordOption(self.visit(ctx.literal(0)) , self.visit(ctx.literal(1)) if len(ctx.literal(0).getText()) > 0 else None)
+    def visitPassword_eq_user_option(self, ctx: SQLParser.Password_eq_user_optionContext):
+        return PasswordAndOldPasswordOption(self.visit(ctx.literal(0)),
+                                            self.visit(ctx.literal(1)) if len(ctx.literal(0).getText()) > 0 else None)
+
     #
-    def visitDefault_language_eq_user_option(self, ctx:SQLParser.Default_language_eq_user_optionContext):
+    def visitDefault_language_eq_user_option(self, ctx: SQLParser.Default_language_eq_user_optionContext):
         return DefaultLanguageOption(ctx.default_language_value().getText())
 
-    def visitAllow_encrypted_value_modifications_user_option(self, ctx:SQLParser.Allow_encrypted_value_modifications_user_optionContext):
+    def visitAllow_encrypted_value_modifications_user_option(self,
+                                                             ctx: SQLParser.Allow_encrypted_value_modifications_user_optionContext):
         return AllowEncryptedValueModification(ctx.ON() is not None)

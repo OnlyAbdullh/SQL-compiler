@@ -315,6 +315,7 @@ CHECK_EXPIRATION:'CHECK_EXPIRATION';
 DOUBLE_COLON : '::';
 IMPERSONATE:'IMPERSONATE';
 PROVIDER:'PROVIDER';
+FILTER_FACTOR: 'FILTER_FACTOR';
 DROP_EXISTING:'DROP_EXISTING';
 NUMERIC_ROUNDABORT:'NUMERIC_ROUNDABORT';
 ANSI_PADDING : 'ANSI_PADDING';
@@ -374,17 +375,16 @@ fragment BITFrag: [01];
 MONEY_LITERAL:
 	[$\u00A2\u00A3\u00A4\u00A5] NUMBER_LITERAL ;
 
-HEX_LITERAL: ('0' 'X' (( NEW_LINE_STRING | HEX_REP)+ |)) ;
-// {
-//       raw = self.text
-//       # Remove \r and \n that come after backslash
-//       raw = raw.replace("\\\r\n", "")
-//       raw = raw.replace("\\\n", "")
-//       raw = raw.replace("\\\r", "")
-//       if raw[-1] in ['x', 'X']:
-//             raw+="0"
-//       self.text = raw
-// };
+HEX_LITERAL: ('0' 'X' (( NEW_LINE_STRING | HEX_REP)+ |))
+ {
+       raw = self.text
+       raw = raw.replace("\\\r\n", "")
+       raw = raw.replace("\\\n", "")
+       raw = raw.replace("\\\r", "")
+       if raw[-1] in ['x', 'X']:
+             raw+="0"
+       self.text = raw
+ };
 
 fragment HEX_REP: [0-9A-F];
 fragment NEW_LINE_STRING: '\\' '\r'? '\n';

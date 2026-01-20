@@ -12,7 +12,7 @@ alter_statement
     ;
 
 alter_table
-    : ALTER TABLE full_table_name alter_table_with_clause? table_action SEMI?
+    : ALTER TABLE full_table_name alter_table_with_clause? table_action (COMMA table_action)* SEMI?
     ;
 
 alter_table_with_clause
@@ -85,7 +85,7 @@ alter_column_option
 
 
 table_add
-    : ADD table_add_item_list;
+    : ADD table_add_item_list ;
 
 table_add_item_list: table_add_item (COMMA table_add_item)*;
 

@@ -1,4 +1,5 @@
 from os import name
+from telnetlib import ENCRYPT
 
 from generated.SQLParser import SQLParser
 from generated.SQLParserVisitor import SQLParserVisitor
@@ -134,8 +135,6 @@ class BasicVisitor(SQLParserVisitor):
     def visitOperators(self, ctx: SQLParser.OperatorsContext):
         return ctx.getText()
 
-        # Literal
-
     def visitColumn_type(self, ctx: SQLParser.Column_typeContext):
         data_type = self.visit(ctx.datatype())
         sparse = ctx.SPARSE() is not None
@@ -169,6 +168,11 @@ class BasicVisitor(SQLParserVisitor):
     def visitVarchar_nvarchar_varbinary_data_type(self, ctx: SQLParser.Varchar_nvarchar_varbinary_data_typeContext):
         name = ctx.getChild(0).getText()
         literal = self.visit(ctx.paren_literal_max()) if ctx.paren_literal_max() else None
+        return DataType(name, literal)
+
+    def visitTime_data_type(self, ctx: SQLParser.Time_data_typeContext):
+        name = ctx.getChild(0).getText()
+        literal = self.visit(ctx.paren_literal()) if ctx.paren_literal() else None
         return DataType(name, literal)
 
     def visitParen_literal_max(self, ctx: SQLParser.Paren_literal_maxContext):
@@ -208,6 +212,7 @@ class BasicVisitor(SQLParserVisitor):
     def visitDefault_column_definition(self, ctx: SQLParser.Default_column_definitionContext):
         col_name = self.visit(ctx.full_column_name())
         col_type = self.visit(ctx.column_type())
+        encrypted_with = self.visit(ctx.encrypted_with_clause()) if ctx.encrypted_with_clause() else None
         constraint_list = self.visit(ctx.column_constraint_list())
         return ColumnDefinition(col_name, col_type, constraint_list)
 
@@ -296,10 +301,6 @@ class BasicVisitor(SQLParserVisitor):
     def visitUser_name(self, ctx: SQLParser.User_nameContext):
         return SingleValueNode(ctx.getText())
 
-    # Statement Block
-    def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
-        return StatementBlock([self.visit(statement) for statement in ctx.statement()])
-
     def visitTable_type_definition(self, ctx: SQLParser.Table_type_definitionContext):
         return TableTypeDefinition(self.visit(ctx.table_type_element_list()))
 
@@ -311,6 +312,10 @@ class BasicVisitor(SQLParserVisitor):
             return GoStatement(ctx.IDENTIFIER().getText())
 
         return GoStatement()
+
+    # Statement Block
+    def visitStatement_block(self, ctx: SQLParser.Statement_blockContext):
+        return StatementBlock([self.visit(statement) for statement in ctx.statement()])
 
     def visitPrint_clause(self, ctx: SQLParser.Print_clauseContext):
         return PrintClause(self.visit(ctx.expression()))
@@ -329,3 +334,69 @@ class BasicVisitor(SQLParserVisitor):
         from_ = self.visit(ctx.literal(0))
         to_ = self.visit(ctx.literal(1))
         return Range(from_, to_)
+
+    def visitFunction_parameters(self, ctx: SQLParser.Function_parametersContext):
+        return FunctionParameters(self.visit(ctx.function_parameter_list()) if ctx.function_parameter_list() else None)
+
+    def visitFunction_parameter_list(self, ctx: SQLParser.Function_parameter_listContext):
+        return ItemsList([self.visit(param) for param in ctx.function_parameter()])
+
+    def visitFunction_parameter(self, ctx: SQLParser.Function_parameterContext):
+        var = UserVariable(ctx.USER_VARIABLE().getText())
+        data_type = self.visit(ctx.datatype())
+
+        null_ = NullClause(ctx.NOT() is None) if ctx.NULL() else None
+
+        def_val = ctx.default_value().getText() if ctx.default_value() else None
+        read_only = ctx.READONLY() is not None
+        return FunctionParameter(var, data_type, null_, def_val, read_only)
+
+    def visitIndex_name(self, ctx: SQLParser.Index_nameContext):
+        return IndexName(ctx.getText())
+    def visitView_attribute(self, ctx:SQLParser.View_attributeContext):
+        return ViewAttribute(ctx.getText())
+    def visitView_check_option(self, ctx: SQLParser.View_check_optionContext):
+        return ViewCheckOption()
+
+    def visitPad_index_option(self, ctx: SQLParser.Pad_index_optionContext):
+        return PadIndexOption(ctx.ON() is not None)
+
+    def visitFilter_factor_option(self, ctx: SQLParser.Filter_factor_optionContext):
+        return FilterFactorOption(ctx.literal().getText())
+
+    def visitDrop_existing_option(self, ctx: SQLParser.Drop_existing_optionContext):
+        return DropExistingOption(ctx.ON() is not None)
+
+    def visitPartition_target(self, ctx: SQLParser.Partition_targetContext):
+        if ctx.full_column_name():
+            return PartitionTarget(ctx.IDENTIFIER().getText(), self.visit(ctx.full_column_name()))
+
+        return PartitionTarget(ctx.getChild(0).getText(), None)
+
+    def visitEncrypted_with_clause(self, ctx: SQLParser.Encrypted_with_clauseContext):
+        return EncryptedWithClause(ItemsList([self.visit(op) for op in ctx.encrypted_option()]))
+
+    def visitColumn_encryption_key_option(self, ctx: SQLParser.Column_encryption_key_optionContext):
+        return ColumnEncryptionKeyOption(self.visit(ctx.full_column_name()))
+
+    def visitEncryption_type_option(self, ctx: SQLParser.Encryption_type_optionContext):
+        return EncryptionTypeOption(ctx.getChild(2).getText())
+
+    def visitAlgorithm_option(self, ctx: SQLParser.Algorithm_optionContext):
+        return AlgorithmOption(ctx.getChild(2).getText())
+
+    def visitBegin_end_function_body(self, ctx: SQLParser.Begin_end_function_bodyContext):
+        statements = ItemsList([self.visit(stmt) for stmt in ctx.statement()])
+        ret_value = self.visit(ctx.expression())
+        return BeginEndFunctionBody(ret_value, statements)
+
+    def visitReturn_function_body(self, ctx: SQLParser.Return_function_bodyContext):
+        return ReturnFuctionBody(self.visit(ctx.select_statement()))
+
+    def visitFunction_return_type(self, ctx: SQLParser.Function_return_typeContext):
+        if ctx.TABLE():
+            return TableReturnType()
+        elif ctx.column_type():
+            return self.visit(ctx.column_type())
+
+        return UserTableReturnType(UserVariable(ctx.USER_VARIABLE().getText()), self.visit(ctx.table_type_definition()))
