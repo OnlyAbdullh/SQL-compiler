@@ -72,8 +72,9 @@ class ModExpression(BinaryExpression):
 
 class ComparisonExpression(BinaryExpression):
     def print(self, spacer="  ", level=0):
-        print(spacer * level+  f"Comparison: {self.operator}")
+        print(spacer * level+  f"Comparison")
         self.left.print(spacer, level + 1)
+        print(spacer * (level+1) + f"Operator : {self.operator}")
         self.right.print(spacer, level + 1)
 
 

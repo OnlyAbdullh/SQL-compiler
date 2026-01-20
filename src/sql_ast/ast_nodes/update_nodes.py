@@ -44,7 +44,7 @@ class UpdateNormalAssignment(ASTNode):
     def print(self, spacer="  ", level=0):
         print(spacer*level +"Normal Assignment")
         self.target.print(spacer,level+1)
-        print(spacer*(level+1)+f" OP: {self.assignment_operator}")
+        print(spacer*(level+1)+f"operator : {self.assignment_operator}")
         self.source.print(spacer,level+1)
 
 class UpdateWriteAssignment(ASTNode):

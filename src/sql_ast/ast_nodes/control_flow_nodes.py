@@ -7,12 +7,12 @@ class WhileClause(ASTNode):
         self.statements = statements
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level}" "WhileClause: {")
+        print(f"{spacer * level}" "While : ")
         print(f"{spacer * (level + 1)}Search Condition:")
         self.search_condition.print(spacer, level + 2)
         print(f"{spacer * (level + 1)}Statements:")
         self.statements.print(spacer, level + 2)
-        print(f"{spacer * level}" "}")
+
 
 
 class IfClause(ASTNode):
@@ -22,15 +22,15 @@ class IfClause(ASTNode):
         self.else_clauses = else_clauses
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level}""IfClause: {")
+        print(f"{spacer * level}""If : ")
         print(f"{spacer * (level + 1)}Condition:")
         self.condition.print(spacer, level + 2)
         print(f"{spacer * (level + 1)}Statements:")
         self.statements.print(spacer, level + 2)
         if self.else_clauses:
-            print(f"{spacer * (level + 1)}Else Clauses:")
+            print(f"{spacer * (level + 1)}Else:")
             self.else_clauses.print(spacer, level + 2)
-        print(f"{spacer * level}""         }")
+
 
 class BreakStatement(ASTNode):
     def __init__(self):
