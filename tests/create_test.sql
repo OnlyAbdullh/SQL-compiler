@@ -1,5 +1,3 @@
-
--- Multi-statement TVF مع @return_variable TABLE (...)
 CREATE FUNCTION dbo.SplitInts (@list NVARCHAR(MAX))
 RETURNS @Result TABLE
 (
@@ -15,7 +13,6 @@ BEGIN
     RETURN
 END;
 
--- Test SQL for CREATE statements
 CREATE TABLE Employees (
     ID INT PRIMARY KEY,
     Name NVARCHAR(100),
