@@ -323,8 +323,21 @@ class BasicVisitor(SQLParserVisitor):
         return PrintClause(self.visit(ctx.expression()))
 
     def visitLiteral(self, ctx: SQLParser.LiteralContext):
+        type_ = "Unknown"
+        if ctx.NUMBER_LITERAL():
+            type_ = "Number"
+        elif ctx.STRING_LITERAL() or ctx.UNICODE_STRING_LITERAL():
+            type_ = "String"
+        elif ctx.BIT_STRING_LITERAL():
+            type_ = "Bit String"
+        elif ctx.MONEY_LITERAL():
+            type_ = "Money"
+        elif ctx.HEX_LITERAL():
+            type_ = "Hexadecimal"
+        elif ctx.TRUE() or ctx.FALSE():
+            type_ = "Boolean"
 
-        return Literal(ctx.getChild(0).getText())
+        return Literal(ctx.getText(), type_)
 
     def visitWith_partition_number_expression(self, ctx: SQLParser.With_partition_number_expressionContext):
         return WithPartitionNumberExpression(self.visit(ctx.partition_number_expression_list()))
@@ -355,8 +368,10 @@ class BasicVisitor(SQLParserVisitor):
 
     def visitIndex_name(self, ctx: SQLParser.Index_nameContext):
         return IndexName(ctx.getText())
-    def visitView_attribute(self, ctx:SQLParser.View_attributeContext):
+
+    def visitView_attribute(self, ctx: SQLParser.View_attributeContext):
         return ViewAttribute(ctx.getText())
+
     def visitView_check_option(self, ctx: SQLParser.View_check_optionContext):
         return ViewCheckOption()
 

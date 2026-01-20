@@ -18,9 +18,17 @@ class Variable(SingleValueNode):
     pass
 
 
-class Literal(SingleValueNode):
+class Literal(ASTNode):
+    def __init__(self, value, type_=None):
+        self.value = value
+        self.type_ = type_
+
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "Literal: " + self.value)
+        print(spacer * level + "Literal: ")
+        print(spacer * (level + 1) + f" Value: {self.value}")
+
+        if self.type_:
+            print(spacer * (level + 1) + f" Type: {self.type_}")
 
 
 class GroupBy(ASTNode):
@@ -68,7 +76,7 @@ class OrderBy(ASTNode):
         self.offset = offset
 
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level)
+        print(spacer * level + "Order By:")
         for item in self.order_by_list:
             item.print(spacer, level + 1)
 
@@ -142,7 +150,7 @@ class Table(ASTNode):  # full_table_name
         self.name = name
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level +"Table Name : "+ self.name)
+        print(spacer * level + "Table Name : " + self.name)
 
 
 class ColumnOrTable(ASTNode):
@@ -150,7 +158,7 @@ class ColumnOrTable(ASTNode):
         self.name = name
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "Column : " +  self.name)
+        print(spacer * level + "Column : " + self.name)
 
 
 class FunctionCall(ASTNode):
@@ -175,9 +183,11 @@ class DerivedTable(SingleExpressionNode):
 class TableSourceItem(ExpressionAlaisNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "Table Source Details :")
-        self.expression.print(spacer, level+1)
+        self.expression.print(spacer, level + 1)
         if self.alias:
             self.alias.print(spacer, level + 1)
+        else:
+            print(spacer * (level + 1) + "Alias : None")
 
 
 class TableSourceList(ASTNode):
@@ -187,7 +197,7 @@ class TableSourceList(ASTNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "Table Sources:")
         for src in self.sources:
-            src.print(spacer, level+1)
+            src.print(spacer, level + 1)
 
 
 class JoinType(ASTNode):
@@ -195,7 +205,7 @@ class JoinType(ASTNode):
         self.name = name
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "Type : "+  self.name)
+        print(spacer * level + "Join Type : " + self.name)
 
 
 class Join(ASTNode):
@@ -206,7 +216,7 @@ class Join(ASTNode):
 
     def print(self, spacer="  ", level=0):
         print(spacer * level + "Join:")
-        self.table.print(spacer, level +1)
+        self.table.print(spacer, level + 1)
         self.join_type.print(spacer, level + 1)
         self.join_condition.print(spacer, level + 1)
 
@@ -219,10 +229,9 @@ class TableSource(ASTNode):
     def print(self, spacer="  ", level=0):
         # self.self_print(spacer * level)
         print(spacer * level + "Table Source:")
-        self.table.print(spacer, level+1)
+        self.table.print(spacer, level + 1)
         if self.joins:
-            self.joins.print(spacer, level+1 )
-
+            self.joins.print(spacer, level + 1)
 
 
 class ItemsList(ASTNode):
@@ -236,14 +245,17 @@ class ItemsList(ASTNode):
             else:
                 print(spacer * level + "Warning : Null Node")
 
+
 class JoinsList(ItemsList):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "JOINS:")
+        print(spacer * level + "Join List: ", end="")
         if len(self.items) == 0:
-            print(spacer * (level + 1) + "No Joins")
+            print( "No Joins")
             return
+        print()
         for join in self.items:
             join.print(spacer, level + 1)
+
 
 class InsertRecordsList(ItemsList):
     def print(self, spacer="  ", level=0):
@@ -581,16 +593,17 @@ class FunctionParameters(SingleExpressionNode):
 
 
 class FunctionParameter(ASTNode):
-    def __init__(self, name, data_type,null_= None, default_value=None, read_only=None):
+    def __init__(self, name, data_type, null_=None, default_value=None, read_only=None):
         self.name = name
         self.data_type = data_type
         self.default_value = default_value
         self.read_only = read_only
         self.null_ = null_
+
     def print(self, spacer="  ", level=0):
         print(spacer * level + "FUNCTION PARAMETER :")
-        print(spacer * (level+1) + "Name :")
-        self.name.print(spacer, level+2)
+        print(spacer * (level + 1) + "Name :")
+        self.name.print(spacer, level + 2)
         self.data_type.print(spacer, level + 1)
         if self.null_:
             self.null_.print(spacer, level + 1)
@@ -600,17 +613,21 @@ class FunctionParameter(ASTNode):
         if self.read_only:
             print(spacer * (level + 1), "READ ONLY")
 
+
 class IndexName(SingleValueNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + f"INDEX NAME : {self.value}")
+
 
 class ViewAttribute(SingleValueNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + f"VIEW ATTRIBUTE : {self.value}")
 
+
 class ViewCheckOption(ASTNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "With Check Option")
+
 
 class OptionOnOff(ASTNode):
     def __init__(self, on):
@@ -619,10 +636,11 @@ class OptionOnOff(ASTNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + f"Option {"ON" if self.on else "OFF"}")
 
+
 class ChangeTrackingWithClause(OptionOnOff):
     def print(self, spacer="  ", level=0):
-        
         print(spacer * level + f"With Track Columns Updated : {"ON" if self.on else "OFF"}")
+
 
 class AllowRowLocks(OptionOnOff):
     def print(self, spacer="  ", level=0):
@@ -643,9 +661,11 @@ class IgnoreDupKey(OptionOnOff):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "Ignore Duplicated Key: " + ("ON" if self.on else "OFF"))
 
+
 class XmlCompressionOption(OptionOnOff):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "XML Compression Option: " + ("ON" if self.on else "OFF"))
+
 
 class StatisticsIncrementalOption(OptionOnOff):
     def print(self, spacer="  ", level=0):
@@ -670,9 +690,12 @@ class StatisticsNoRecompute(OptionOnOff):
 class PadIndexOption(OptionOnOff):
     def print(self, spacer="  ", level=0):
         print(spacer * level + f"PAD INDEX : {'ON' if self.on else 'OFF'}")
+
+
 class DropExistingOption(OptionOnOff):
     def print(self, spacer="  ", level=0):
         print(spacer * level + f"DROP EXISTING : {'ON' if self.on else 'OFF'}")
+
 
 class FilterFactorOption(SingleValueNode):
     def print(self, spacer="  ", level=0):
@@ -690,6 +713,7 @@ class PartitionTarget(ASTNode):
         if self.column:
             self.column.print(spacer, level + 1)
 
+
 class LobCompactionOption(OptionOnOff):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "Lob Compaction Option: " + ("ON" if self.on else "OFF"))
@@ -705,10 +729,12 @@ class EncryptedWithClause(SingleExpressionNode):
         print(spacer * level + "ENCRYPTED WITH :")
         self.expression.print(spacer, level + 1)
 
+
 class ColumnEncryptionKeyOption(SingleExpressionNode):
     def print(self, spacer="  ", level=0):
         print(spacer * level + "COLUMN ENCRYPTION KEY :")
         self.expression.print(spacer, level + 1)
+
 
 class EncryptionTypeOption(SingleValueNode):
     def print(self, spacer="  ", level=0):
@@ -726,7 +752,7 @@ class AllowEncryptedValueModification(OptionOnOff):
 
 
 class BeginEndFunctionBody(ASTNode):
-    def __init__(self,return_val , statements):
+    def __init__(self, return_val, statements):
         self.return_val = return_val
         self.statements = statements
 
@@ -747,17 +773,17 @@ class ReturnFuctionBody(SingleExpressionNode):
         print(spacer * (level + 1) + "RETURN VALUE :")
         self.expression.print(spacer, level + 2)
 
+
 class TableReturnType(ASTNode):
     def print(self, spacer="  ", level=0):
         self.self_print(spacer * level + "TABLE")
 
 
 class UserTableReturnType(ASTNode):
-    def __init__(self, name , table_type):
+    def __init__(self, name, table_type):
         self.name = name
         self.table_type = table_type
 
     def print(self, spacer="  ", level=0):
-        self.name.print(spacer ,level + 1)
+        self.name.print(spacer, level + 1)
         self.table_type.print(spacer, level + 1)
-
