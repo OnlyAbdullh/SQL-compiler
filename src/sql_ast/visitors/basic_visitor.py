@@ -62,7 +62,7 @@ class BasicVisitor(SQLParserVisitor):
     def visitJoin_clause(self, ctx: SQLParser.Join_clauseContext):
         join_type = self.visit(ctx.join_type())
         table = self.visit(ctx.table_source_item())
-        join_condition = self.visit(ctx.join_condition())
+        join_condition = self.visit(ctx.join_condition()) if ctx.join_condition() else None
         return Join(join_type, table, join_condition)
 
     def visitJoin_condition(self, ctx: SQLParser.Join_conditionContext):

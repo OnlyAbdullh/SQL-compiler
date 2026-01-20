@@ -1,4 +1,5 @@
 from .ast_node import ASTNode
+from .basic_nodes import SingleValueNode
 
 
 class BeginDistributedTransactionNode(ASTNode):
@@ -16,9 +17,9 @@ class BeginTransactionNode(ASTNode):
         self.name = name
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level}Begin Transaction")
+        print(f"{spacer * level}Begin Transaction : ")
         if self.name:
-            self.name.print(spacer, level + 1)
+            self.name.print(spacer, level+1 )
 
 
 class TransactionNameWithMarkClauseNode(ASTNode):
@@ -58,13 +59,13 @@ class WithDelayDurabilityClauseNode(ASTNode):
         self.on = on
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level}WithDelayDurabilityClause : {'ON' if self.on else 'OFF'}")
+        print(f"{spacer * level}With Delay Durability  : {'ON' if self.on else 'OFF'}")
 
 
 class CommitWorkNode(ASTNode):
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level} Commit Work")
+        print(f"{spacer * level}Commit Work")
 
 
 class SaveTransactionNode(ASTNode):
@@ -72,8 +73,8 @@ class SaveTransactionNode(ASTNode):
         self.name = name
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level}Save Transaction",   end="")
-        self.name.print(" ", 1)
+        print(f"{spacer * level}Save Transaction : ")
+        self.name.print(spacer , level + 1)
 
 
 class RollbackTransactionNode(ASTNode):
@@ -81,12 +82,16 @@ class RollbackTransactionNode(ASTNode):
         self.name = name
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level} Rollback Transaction :", end="")
+        print(f"{spacer * level}Rollback Transaction :")
         if self.name:
-            self.name.print(" ", 1)
+            self.name.print(spacer , level + 1)
 
 
 class RollbackWorkNode(ASTNode):
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level} Rollback Work")
+        print(f"{spacer * level}Rollback Work")
+
+class TransactionNameNode(SingleValueNode):
+    def print(self, spacer="  ", level=0):
+        print(f"{spacer * level}Transaction Name: {self.value}")

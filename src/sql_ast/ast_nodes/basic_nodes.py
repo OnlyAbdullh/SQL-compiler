@@ -11,7 +11,7 @@ class SingleValueNode(ASTNode):
 
 class UserVariable(SingleValueNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + self.__class__.__name__ + ": " + self.value)
+        print(spacer * level +  "User Variable : " + self.value)
 
 
 class Variable(SingleValueNode):
@@ -179,7 +179,9 @@ class FunctionCall(ASTNode):
 
 
 class DerivedTable(SingleExpressionNode):
-    pass
+    def print(self, spacer="  ", level=0):
+        print(spacer * level + "Derived Table :")
+        self.expression.print(spacer, level + 1)
 
 
 class TableSourceItem(ExpressionAlaisNode):
@@ -220,7 +222,8 @@ class Join(ASTNode):
         print(spacer * level + "Join:")
         self.table.print(spacer, level + 1)
         self.join_type.print(spacer, level + 1)
-        self.join_condition.print(spacer, level + 1)
+        if self.join_condition:
+            self.join_condition.print(spacer, level + 1)
 
 
 class TableSource(ASTNode):
@@ -345,7 +348,7 @@ class DataType(ASTNode):
         self.params = params
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"DataType:  {self.name}")
+        print(spacer * level + f"Data Type : {self.name}")
         if self.params:
             self.params.print(spacer, level + 1)
 
@@ -555,7 +558,7 @@ class GoStatement(ASTNode):
         self.id = id
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "GO STATEMENT :")
+        print(spacer * level + "Go Statement :")
         if self.id:
             print(spacer * (level + 1)+ f"Use : {self.id}")
 

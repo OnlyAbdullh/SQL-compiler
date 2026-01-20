@@ -11,7 +11,7 @@ delete_and_update_where_clause
     : where_clause | (WHERE CURRENT OF cursor_name)
     ;
 
-join_clause: join_type JOIN table_source_item join_condition;
+join_clause: join_type JOIN table_source_item join_condition?;
 
 having_clause: HAVING search_condition;
 
@@ -115,7 +115,7 @@ paren_literal_max: LPAREN (literal|MAX) RPAREN;
 
 
 function_call
-    : (IDENTIFIER DOT)? (IDENTIFIER|MAX) LPAREN function_arguments? RPAREN
+    : (IDENTIFIER DOT)? (IDENTIFIER|MAX|DEFAULT) LPAREN function_arguments? RPAREN
     ;
 
 function_arguments

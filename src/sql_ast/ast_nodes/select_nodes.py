@@ -87,7 +87,7 @@ class SelectQuantifier(ASTNode):
 
     def print(self, spacer="  ", level=0):
         if self.quantifier:
-            print(spacer * level + self.quantifier)
+            print(spacer * level +f"Quantifier : {self.quantifier}")
         if self.top:
             self.top.print(spacer, level + 1)
 

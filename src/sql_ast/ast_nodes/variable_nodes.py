@@ -7,8 +7,8 @@ class DeclareVariableNode(ASTNode):
         self.var_list = var_list
 
     def print(self, spacer="  ", level=0):
-        print(spacer*level + "Declared Variables List:") # this is data i want to print for my node
-        self.var_list.print(spacer , level)
+        print(spacer*level + "Declare Variables:")
+        self.var_list.print(spacer , level+1)
 
 
 class ScalarVariableNode(ASTNode):

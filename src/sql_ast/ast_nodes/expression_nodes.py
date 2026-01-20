@@ -15,9 +15,10 @@ class BinaryExpression(ASTNode):
         self.right = right
 
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level, self.operator)
-        self.left.print(spacer, level + 1)
-        self.right.print(spacer, level + 1)
+        print(spacer * level + "Binary Expression:")
+        print(spacer * (level+1) + "Operator : " +self.operator)
+        self.left.print(spacer, level + 2)
+        self.right.print(spacer, level + 2)
 
 
 class OrExpression(BinaryExpression):
@@ -72,8 +73,9 @@ class ModExpression(BinaryExpression):
 
 class ComparisonExpression(BinaryExpression):
     def print(self, spacer="  ", level=0):
-        print(spacer * level+  f"Comparison: {self.operator}")
+        print(spacer * level+  f"Comparison")
         self.left.print(spacer, level + 1)
+        print(spacer * (level+1) + f"Operator : {self.operator}")
         self.right.print(spacer, level + 1)
 
 
@@ -105,11 +107,10 @@ class InExpression(ASTNode):
         self.negated = negated
 
     def print(self, spacer="  ", level=0):
-        neg_prefix = " NOT IN " if self.negated else " IN "
-        self.self_print(spacer * level, neg_prefix)
+        neg_prefix = "Not In :" if self.negated else "In :"
+        print(spacer * level+  neg_prefix )
         self.value.print(spacer, level + 1)
         if isinstance(self.items, list):
-            print(spacer * (level + 1) + f"{neg_prefix}List")
             for item in self.items:
                 item.print(spacer, level + 2)
         else:
@@ -124,8 +125,8 @@ class BetweenExpression(ASTNode):
         self.negated = negated
 
     def print(self, spacer="  ", level=0):
-        to_print = " NOT BETWEEN " if self.negated else " BETWEEN "
-        self.self_print(spacer * level, to_print)
+        to_print = "Not Between :" if self.negated else "Between :"
+        print(spacer * level+ to_print)
         self.value.print(spacer, level + 1)
         self.low.print(spacer, level + 1)
         self.high.print(spacer, level + 1)
@@ -138,8 +139,8 @@ class LikeExpression(ASTNode):
         self.negated = negated
 
     def print(self, spacer="  ", level=0):
-        to_print = " NOT Like " if self.negated else " LIKE "
-        self.self_print(spacer * level, to_print)
+        to_print = "Not Like :" if self.negated else "Like :"
+        print(spacer * level+ to_print)
         self.value.print(spacer, level + 1)
         self.pattern.print(spacer, level + 1)
 
@@ -162,8 +163,8 @@ class ExistsExpression(ASTNode):
         self.negated = negated
 
     def print(self, spacer="  ", level=0):
-        to_print = "NOT EXISTS " if self.negated else " EXISTS "
-        self.self_print(spacer * level, to_print)
+        to_print = "Not Exists " if self.negated else "Exists "
+        print(spacer * level+to_print)
         self.subquery.print(spacer, level + 1)
 
 class NotExpression(SingleExpressionNode):
