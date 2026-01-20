@@ -107,11 +107,10 @@ class InExpression(ASTNode):
         self.negated = negated
 
     def print(self, spacer="  ", level=0):
-        neg_prefix = "Not In " if self.negated else "In "
+        neg_prefix = "Not In :" if self.negated else "In :"
         print(spacer * level+  neg_prefix )
         self.value.print(spacer, level + 1)
         if isinstance(self.items, list):
-            print(spacer * (level + 1) + f"{neg_prefix}List")
             for item in self.items:
                 item.print(spacer, level + 2)
         else:

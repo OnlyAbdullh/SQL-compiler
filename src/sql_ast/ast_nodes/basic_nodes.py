@@ -558,7 +558,7 @@ class GoStatement(ASTNode):
         self.id = id
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "GO STATEMENT :")
+        print(spacer * level + "Go Statement :")
         if self.id:
             print(spacer * (level + 1)+ f"Use : {self.id}")
 
