@@ -24,7 +24,7 @@ class SelectSetOperationsList(ASTNode):
 
     def print(self, spacer="  ", level=0):
         if len(self.lst) >0:
-            print(spacer * level, "SET OPERATIONS")
+            print(spacer * level + "SET OPERATIONS")
         for item in self.lst:
             item.print(spacer, level + 1)
 
@@ -87,7 +87,7 @@ class SelectQuantifier(ASTNode):
 
     def print(self, spacer="  ", level=0):
         if self.quantifier:
-            print(spacer * level, self.quantifier)
+            print(spacer * level + self.quantifier)
         if self.top:
             self.top.print(spacer, level + 1)
 
@@ -114,7 +114,7 @@ class TableStarSelectItem(ASTNode):
         self.table = table
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level, "Table.*")
+        print(spacer * level + "Table.*")
         self.table.print(spacer, level + 1)
 
 

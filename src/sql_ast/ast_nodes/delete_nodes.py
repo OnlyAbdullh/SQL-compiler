@@ -11,7 +11,7 @@ class DeleteStatementNode(ASTNode):
         self.delete_and_update_where_clause = delete_and_update_where_clause
 
     def print(self, spacer="  ", level=0):
-        print(spacer*level, "DELETE")
+        print(spacer*level + "DELETE")
         if self.with_cte:
             self.with_cte.print(spacer,level+1)
 
