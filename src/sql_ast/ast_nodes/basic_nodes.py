@@ -768,8 +768,9 @@ class BeginEndFunctionBody(ASTNode):
             print(spacer * (level + 1) + "STATEMENTS :")
             self.statements.print(spacer, level + 2)
 
-        print(spacer * (level + 1) + "RETURN VALUE :")
-        self.return_val.print(spacer, level + 2)
+        if self.return_val:
+            print(spacer * (level + 1) + "RETURN VALUE :")
+            self.return_val.print(spacer, level + 2)
 
 
 class ReturnFuctionBody(SingleExpressionNode):
