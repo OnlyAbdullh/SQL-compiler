@@ -362,7 +362,7 @@ ALL_SPARSE_COLUMNS:'ALL_SPARSE_COLUMNS';
 //! ║━━━━━━━━━━━━<LITERALs>━━━━━━━━━━━━║
 //! ╚══════════════════════════════════╝
 NUMBER_LITERAL:
-	(DIGIT+ ( '.' DIGIT*)? | '.' DIGIT+) ('E' [+\-]? DIGIT+)? ;
+	([+-]?DIGIT+ ( '.' DIGIT*)? | '.' DIGIT+) ('E' [+\-]? DIGIT+)? ;
 
 TRUE: 'TRUE' ;
 FALSE: 'FALSE' ;
@@ -377,7 +377,7 @@ MONEY_LITERAL:
 
 HEX_LITERAL: ('0' 'X' (( NEW_LINE_STRING | HEX_REP)+ |))
  {
- ln = len(raw)
+ln = len(raw)
 i = 0
 ln = len(raw)
 txt = ""
