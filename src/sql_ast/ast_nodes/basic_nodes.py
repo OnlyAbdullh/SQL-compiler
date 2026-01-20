@@ -171,7 +171,8 @@ class FunctionCall(ASTNode):
 
     def print(self, spacer="  ", level=0):
         full_name = f"{self.schema}.{self.name}" if self.schema else self.name
-        self.self_print(spacer * level, full_name)
+        print(spacer * level + "Function Call : ")
+        print(spacer * (level + 1)+ "Name: " + full_name)
 
         if self.args:
             print(spacer * (level + 1)+ "Arguments:")
@@ -324,7 +325,7 @@ class NullClause(ASTNode):
         self.nullable = nullable
 
     def print(self, spacer="  ", level=0):
-        print(f"{spacer * level}Nullability: {'NULL' if self.nullable else 'NOT NULL'}")
+        print(f"{spacer * level}Nullability: {'Null' if self.nullable else 'Not Null'}")
 
 
 class ColumnType(ASTNode):
@@ -400,7 +401,7 @@ class ComputedColumnDefinition(ASTNode):
         self.name.print(spacer, level + 1)
         self.expression.print(spacer, level + 1)
         if self.persisted:
-            print(spacer * (level + 1)+ "PERSISTED")
+            print(spacer * (level + 1)+ "Persisted")
 
 
 class ColumnConstraint(ASTNode):
@@ -421,8 +422,8 @@ class IdentityConstraint(ASTNode):
 
     def print(self, spacer="  ", level=0):
         self.self_print(spacer * level)
-        print(spacer * (level + 1)+ f"SEED : {self.seed}")
-        print(spacer * (level + 1)+ f"INCREMENT : {self.increment}")
+        print(spacer * (level + 1)+ f"Seed : {self.seed}")
+        print(spacer * (level + 1)+ f"Increment : {self.increment}")
 
 
 class CheckConstraint(ASTNode):
@@ -439,7 +440,7 @@ class PrimaryKeyConstraint(ASTNode):
         self.clustered = clustered
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"PRIMARY KEY: {'CLUSTERED' if self.clustered else 'NONCLUSTERED'}")
+        print(spacer * level + f"Primary Key: {'Clustered' if self.clustered else 'Non Clustered'}")
 
 
 class UniqueConstraint(ASTNode):
@@ -447,7 +448,7 @@ class UniqueConstraint(ASTNode):
         self.clustered = clustered
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"Unique : {'CLUSTERED' if self.clustered else 'NONCLUSTERED'}")
+        print(spacer * level + f"Unique : {'Clustered' if self.clustered else 'Non Clustered'}")
 
 
 class ColumnForeignKeyConstraint(ASTNode):
@@ -456,7 +457,7 @@ class ColumnForeignKeyConstraint(ASTNode):
         self.referenced_column = referenced_column
 
     def print(self, spacer="  ", level=0):
-        print(spacer * (level + 1)+ "FOREIGN KEY REFERENCES :")
+        print(spacer * (level + 1)+ "Foreign Key References :")
         self.referenced_table.print(spacer, level + 2)
         self.referenced_column.print(spacer, level + 2)
 
@@ -467,7 +468,7 @@ class DefaultConstraint(ASTNode):
         self.with_values = with_values
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "DEFAULT CONSTRAINT"" With VALUES" if self.with_values else "")
+        print(spacer * level + "Default Constraint"" With Values" if self.with_values else "")
         self.default_value.print(spacer, level + 1)
 
 
@@ -510,12 +511,12 @@ class UniqueTableConstraint(ASTNode):
 
 class PrimaryKeyColConstraint(ASTNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "PRIMARY KEY")
+        print(spacer * level + "Primary Key")
 
 
 class UniqueColConstraint(ASTNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "UNIQUE")
+        print(spacer * level + "Unique")
 
 
 class ForeignKeyTableConstraint(ASTNode):
@@ -525,9 +526,9 @@ class ForeignKeyTableConstraint(ASTNode):
         self.referenced_column = referenced_column
 
     def print(self, spacer="  ", level=0):
-        print(spacer * (level + 1)+ "FOREIGN KEY COLUMNS :")
+        print(spacer * (level + 1)+ "Foreign Key Columns :")
         self.column_list.print(spacer, level + 2)
-        print(spacer * (level + 1)+ "REFERENCES :")
+        print(spacer * (level + 1)+ "References :")
         self.referenced_table.print(spacer, level + 2)
         self.referenced_column.print(spacer, level + 2)
 
@@ -540,7 +541,7 @@ class DefaultTableConstraint(ASTNode):
     def print(self, spacer="  ", level=0):
         print(spacer * (level + 1)+ "COLUMN :")
         self.column.print(spacer, level + 2)
-        print(spacer * (level + 1)+ "DEFAULT VALUE :")
+        print(spacer * (level + 1)+ "Default value :")
         self.default_value.print(spacer, level + 2)
 
 
@@ -549,7 +550,7 @@ class TableTypeDefinition(ASTNode):
         self.list = lst
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "TABLE TYPE DEFINITION :")
+        print(spacer * level + "Table Type Definition :")
         self.list.print(spacer, level + 2)
 
 
@@ -577,7 +578,7 @@ class WithPartitionNumberExpression(ASTNode):
         self.expressions_list = expressions_list
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "WITH PARTITIONS :")
+        print(spacer * level + "With Partitions :")
         self.expressions_list.print(spacer, level + 2)
 
 
@@ -587,13 +588,13 @@ class Range(ASTNode):
         self.to_ = to_
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"RANGE : {self.from_} to {self.to_}")
+        print(spacer * level + f"Range : {self.from_} to {self.to_}")
 
 
 class FunctionParameters(SingleExpressionNode):
     def print(self, spacer="  ", level=0):
         if self.expression:
-            print(spacer * level + "FUNCTION PARAMETERS :")
+            print(spacer * level + "Function Parameters :")
             self.expression.print(spacer, level + 1)
 
 
@@ -606,7 +607,7 @@ class FunctionParameter(ASTNode):
         self.null_ = null_
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + "FUNCTION PARAMETER :")
+        print(spacer * level + "Function Parameter :")
         print(spacer * (level + 1) + "Name :")
         self.name.print(spacer, level + 2)
         self.data_type.print(spacer, level + 1)
@@ -699,16 +700,16 @@ class PadIndexOption(OptionOnOff):
 
 class DropExistingOption(OptionOnOff):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"DROP EXISTING : {'ON' if self.on else 'OFF'}")
+        print(spacer * level + f"Drop Existing : {'ON' if self.on else 'OFF'}")
 
 
 class FilterFactorOption(SingleValueNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"FILTER FACTOR : {self.value}")
+        print(spacer * level + f"Filter Factor : {self.value}")
 
 class FillFactorOption(SingleValueNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"FILTER FACTOR : {self.value}")
+        print(spacer * level + f"Fill Factor : {self.value}")
 
 class PartitionTarget(ASTNode):
     def __init__(self, partition_name, column=None):
@@ -716,8 +717,8 @@ class PartitionTarget(ASTNode):
         self.column = column
 
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"PARTITION TARGET : ")
-        print(spacer * (level + 1)+ "PARTITION NAME : " + self.partition_name)
+        print(spacer * level + f"Partition Target : ")
+        print(spacer * (level + 1)+ "Partition Name : " + self.partition_name)
         if self.column:
             self.column.print(spacer, level + 1)
 
@@ -746,12 +747,12 @@ class ColumnEncryptionKeyOption(SingleExpressionNode):
 
 class EncryptionTypeOption(SingleValueNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"ENCRYPTION TYPE : {self.value}")
+        print(spacer * level + f"Encryption Type : {self.value}")
 
 
 class AlgorithmOption(SingleValueNode):
     def print(self, spacer="  ", level=0):
-        print(spacer * level + f"ALGORITHM : {self.value}")
+        print(spacer * level + f"Algorithm : {self.value}")
 
 
 class AllowEncryptedValueModification(OptionOnOff):
@@ -765,26 +766,26 @@ class BeginEndFunctionBody(ASTNode):
         self.statements = statements
 
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level + "FUNCTION BODY :")
+        self.self_print(spacer * level + "Function Body :")
 
         if self.statements:
-            print(spacer * (level + 1) + "STATEMENTS :")
+            print(spacer * (level + 1) + "Statments :")
             self.statements.print(spacer, level + 2)
 
-        print(spacer * (level + 1) + "RETURN VALUE :")
+        print(spacer * (level + 1) + "Return Value :")
         self.return_val.print(spacer, level + 2)
 
 
 class ReturnFuctionBody(SingleExpressionNode):
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level + "FUNCTION BODY :")
-        print(spacer * (level + 1) + "RETURN VALUE :")
+        self.self_print(spacer * level + "Function Body :")
+        print(spacer * (level + 1) + "Return Value :")
         self.expression.print(spacer, level + 2)
 
 
 class TableReturnType(ASTNode):
     def print(self, spacer="  ", level=0):
-        self.self_print(spacer * level + "TABLE")
+        self.self_print(spacer * level + "Table Return Type")
 
 
 class UserTableReturnType(ASTNode):
