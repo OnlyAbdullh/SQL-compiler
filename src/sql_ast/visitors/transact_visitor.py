@@ -51,4 +51,4 @@ class TransactVisitor(SQLParserVisitor):
         return RollbackWorkNode()
 
     def visitTransaction_name(self, ctx: SQLParser.Transaction_nameContext):
-        return SingleValueNode(value=ctx.getText())
+        return TransactionNameNode(value=ctx.getText())
